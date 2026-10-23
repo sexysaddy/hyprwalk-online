@@ -14,7 +14,7 @@ An experimental 3D desktop for Hyprland: walk around your desktop in first perso
 
 - **First-person 3D desktop:** walk, run and jump through a world containing desktop windows, maps and avatars.
 - **Two builds in one source tree:** choose the `egor` or `stepan` profile at build time.
-- **Egor profile:** Counter-Strike/Source-inspired movement with configurable CS-style bunnyhop, camera FOV and aspect ratio/stretch; optional video viewmodels from MP4/WebM clips, plus GoldSrc `.mdl` model viewmodels.
+- **Egor profile:** Counter-Strike/Source-inspired movement with configurable CS-style bunnyhop, camera FOV and aspect ratio/stretch; optional video viewmodels from MP4/WebM clips, plus GoldSrc `.mdl` model viewmodels. (press the tilde key (`~`) to open the action menu for configuration options)
 - **Stepan profile:** an alternative renderer/gameplay variant with extra visibility culling and rendering/performance optimizations.
 - **Window sharing:** explicitly selected or consented windows can be streamed as VP8 over WebRTC. Capture follows actual window-surface updates by default (no fixed 30-FPS limit); an optional explicit 1–30 FPS cap remains available for constrained setups. The receiver keeps the last frame visible while the source is idle.
 - **Local effects and lip-sync:** Hyprwalk's own sounds and local microphone-driven lip-sync are separate from window sharing.
