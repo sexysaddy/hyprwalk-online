@@ -1,5 +1,7 @@
 # Hyprwalk
 
+![Project Preview](shared/plugin/screenshots/screenshot_20261023_213723.png)
+
 > 🌐 **A multiplayer online version of the `hyprwalk` project.**
 > 
 > This project is a standalone, heavy modification of the original [hyprwalk](https://github.com/Marcus-Arcadius/hyprwalk) plugin by [Marcus-Arcadius](https://github.com/Marcus-Arcadius)
@@ -59,3 +61,9 @@ The optional CS 1.6 `.mdl` model code is present, but `v_knife.mdl` is not bundl
 ## Security and status
 
 The TCP signaling layer does not authenticate peers. WebRTC's DTLS/SRTP media encryption does not fix that separate trust problem. Do not expose the signaling listener to arbitrary Internet peers. See [Security](docs/security.md), [Architecture](docs/architecture.md), and [Testing](docs/testing.md). Third-party notices are collected in [THIRD_PARTY.md](THIRD_PARTY.md); upstream code and asset redistribution rights should be reviewed before publishing a binary release.
+
+## ⚠️ AI Development Notice & Project State
+
+* **AI Assisted:** Please be aware that parts of this project, its architecture adjustments, and core features were written and structured with the assistance of AI language models, specifically **ChatGPT** and **Claude**. Expect experimental code patterns, potential bugs, or undocumented edge cases.
+* **Work in Progress:** This project is completely **unfinished** and is currently in a highly experimental state. 
+* **Future Updates:** There is **NO** guarantee of active maintenance. Further development and refinement are purely **POSSIBLE** and will occur strictly on an occasional, hobbyist basis. Use, modify, and build upon this code entirely at your own risk.
