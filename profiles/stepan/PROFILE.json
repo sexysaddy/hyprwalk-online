@@ -1,0 +1,12 @@
+{
+  "name": "stepan",
+  "description": "Stepan profile: alternate rendering/gameplay implementation with multiplayer.",
+  "plugin_overrides": 58,
+  "multiplayer_overrides": 16,
+  "video_defaults": {
+    "width": 8192,
+    "height": 8192,
+    "fps": 30,
+    "bitrate_bps": 2500000
+  }
+}

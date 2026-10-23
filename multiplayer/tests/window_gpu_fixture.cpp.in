@@ -1,0 +1,79 @@
+#include "math3d.hpp"
+#include "remote_windows.hpp"
+#include <algorithm>
+#include <iostream>
+#include <map>
+#include <set>
+#include <stdexcept>
+#include <string>
+#include <source_location>
+using GLuint=unsigned;using GLenum=unsigned;using GLint=int;using GLsizei=int;
+@CONSTANTS@
+void require(bool ok,const std::source_location where=std::source_location::current()){if(!ok)throw std::runtime_error("GL TEST DOUBLE invariant failed at "+std::to_string(where.line()));}
+namespace fixture {
+GLuint next=100,bound=0,unpack=999;
+int allocations=0,failAt=0,uploads=0,draws=0,subUploads=0;
+#ifdef HYPRWALK_WEBRTC
+GLenum error=GL_NO_ERROR;bool uploadFail=false;
+#endif
+std::set<GLuint> live{42,43}; // unrelated local window/avatar sentinel resources
+std::map<GLenum,GLint> pixels;
+std::map<std::string,hyprwalk::V3> vectors;
+}
+void glGenTextures(GLsizei n,GLuint* out){for(int i=0;i<n;++i){++fixture::allocations;if(fixture::failAt==fixture::allocations){out[i]=0;continue;}out[i]=fixture::next++;require(fixture::live.insert(out[i]).second);}}
+void glDeleteTextures(GLsizei n,const GLuint* ids){for(int i=0;i<n;++i){require(ids[i]>=100);require(fixture::live.erase(ids[i])==1);}}
+void glBindTexture(GLenum,GLuint id){require(fixture::live.contains(id));fixture::bound=id;}
+void glGetIntegerv(GLenum p,GLint* v){*v=p==GL_PIXEL_UNPACK_BUFFER_BINDING?static_cast<GLint>(fixture::unpack):fixture::pixels[p];}
+void glBindBuffer(GLenum p,GLuint id){require(p==GL_PIXEL_UNPACK_BUFFER);fixture::unpack=id;}
+void glPixelStorei(GLenum p,GLint v){fixture::pixels[p]=v;}
+void glTexImage2D(GLenum,GLint,GLint,GLsizei w,GLsizei h,GLint,GLenum,GLenum,const void* ptr){require(ptr&&w>0&&h>0&&fixture::live.contains(fixture::bound));require(fixture::unpack==0);require(fixture::pixels[GL_UNPACK_ROW_LENGTH]==0&&fixture::pixels[GL_UNPACK_SKIP_PIXELS]==0&&fixture::pixels[GL_UNPACK_SKIP_ROWS]==0&&fixture::pixels[GL_UNPACK_ALIGNMENT]==1);++fixture::uploads;}
+void glDrawArrays(GLenum,GLint,GLsizei n){require(n==4&&fixture::live.contains(fixture::bound));++fixture::draws;}
+#ifdef HYPRWALK_WEBRTC
+GLenum glGetError(){const auto e=fixture::error;fixture::error=GL_NO_ERROR;return e;}
+void glTexSubImage2D(GLenum,GLint,GLint,GLint,GLsizei w,GLsizei h,GLenum,GLenum,const void* ptr){
+ require(ptr&&w>0&&h>0&&fixture::live.contains(fixture::bound)&&fixture::unpack==0);
+ require(fixture::pixels[GL_UNPACK_ROW_LENGTH]==0&&fixture::pixels[GL_UNPACK_SKIP_PIXELS]==0&&fixture::pixels[GL_UNPACK_SKIP_ROWS]==0);
+ ++fixture::subUploads;if(fixture::uploadFail)fixture::error=999999;
+}
+#endif
+@NOOPS@
+@IMPL@
+using namespace hyprwalk;
+int main(){try{
+ CRenderer r;SFrameParams f;std::vector<SRemoteWindowFrame> frames;f.remoteWindows=&frames;
+ auto image=[](int w,int h,int serial){auto p=std::make_shared<SRemoteWindowImage>();p->width=w;p->height=h;p->serial=serial;p->rgba.assign(w*h*4,127);return p;};
+ SRemoteWindowFrame a;a.key.session[0]=1;a.key.owner[0]=2;a.key.generation[0]=3;a.key.window=1;a.panel=image(512,256,1);a.geometry.width=2;a.geometry.height=1;
+ fixture::pixels[GL_UNPACK_ROW_LENGTH]=37;fixture::pixels[GL_UNPACK_SKIP_ROWS]=3;fixture::pixels[GL_UNPACK_SKIP_PIXELS]=4;
+ frames={a};r.drawRemoteWindows(f,M4::identity());require(fixture::uploads==1&&fixture::draws==1&&fixture::live.size()==3);require(fixture::unpack==999&&fixture::pixels[GL_UNPACK_ROW_LENGTH]==37&&fixture::pixels[GL_UNPACK_SKIP_ROWS]==3&&fixture::pixels[GL_UNPACK_SKIP_PIXELS]==4);
+ const auto localPanel=r.m_remoteWindows.at(a.key).panel;
+ for(int i=0;i<100;++i){frames[0].geometry.origin[0]=i;r.drawRemoteWindows(f,M4::identity());}
+ require(fixture::uploads==2&&r.m_remoteWindows.at(a.key).panel==localPanel&&fixture::vectors.at("uOrigin").x==99);
+ auto b=a;b.key.window=2;frames.push_back(b);r.drawRemoteWindows(f,M4::identity());require(fixture::live.size()==4&&fixture::uploads==2);
+ std::vector<mp::RemoteWindow> remote(2);remote[0].key=a.key;remote[0].receive.hidden=true;remote[1].key=b.key;r.pruneRemoteWindows(remote);require(fixture::live.size()==3&&!r.m_remoteWindows.contains(a.key)&&r.m_remoteWindows.contains(b.key));
+ frames={b};r.drawRemoteWindows(f,M4::identity());require(fixture::uploads==5);frames.clear();r.drawRemoteWindows(f,M4::identity());require(fixture::live.size()==2);
+ frames={a};fixture::failAt=fixture::allocations+2;r.drawRemoteWindows(f,M4::identity());require(fixture::live.size()==2&&r.m_remoteWindows.at(a.key).failed);before=fixture::allocations;for(int i=0;i<100;++i)r.drawRemoteWindows(f,M4::identity());require(fixture::allocations==before);
+ r.clearRemoteWindows();fixture::failAt=0;frames[0].key.generation[0]=4;r.drawRemoteWindows(f,M4::identity());require(fixture::live.size()==4);
+ auto bad=image(512,256,10);bad->rgba.clear();frames[0].panel=bad;r.drawRemoteWindows(f,M4::identity());require(fixture::live.size()==2);
+ r.clearRemoteWindows();frames={a};for(int i=0;i<100;++i){r.drawRemoteWindows(f,M4::identity());require(fixture::live.size()==4);r.clearRemoteWindows();require(fixture::live.size()==2);}
+ r.drawRemoteWindows(f,M4::identity());f.remoteWindows=nullptr;r.drawRemoteWindows(f,M4::identity());require(r.m_remoteWindows.empty()&&fixture::live==std::set<GLuint>({42,43}));
+#ifdef HYPRWALK_WEBRTC
+ f.remoteWindows=&frames;frames={a};MediaDouble backend;f.videoSession=&backend;
+ auto pixels=std::make_shared<mp::VideoFrame>();pixels->key={a.key,1,1};pixels->serial=1;pixels->width=128;pixels->height=64;pixels->time=std::chrono::steady_clock::now();pixels->rgba.assign(128*64*4,255);
+ frames[0].video=pixels;r.drawRemoteWindows(f,M4::identity());auto& cache=r.m_remoteWindows.at(a.key);const auto texture=cache.video;
+ require(texture&&fixture::live.size()==5&&cache.videoSerial==1);const auto placeholder=cache.panel;
+ const auto allocations=fixture::allocations;const auto uploads=fixture::uploads;
+ r.drawRemoteWindows(f,M4::identity());require(fixture::allocations==allocations&&fixture::uploads==uploads);
+ ++pixels->serial;r.drawRemoteWindows(f,M4::identity());require(fixture::subUploads==1&&cache.video==texture&&cache.panel==placeholder);
+ pixels->width=64;pixels->height=128;pixels->rgba.assign(64*128*4,12);++pixels->serial;r.drawRemoteWindows(f,M4::identity());require(cache.video==texture&&cache.videoWidth==64&&cache.videoHeight==128&&fixture::uploads==uploads+1);
+ require(fixture::vectors.at("uRight").x==.5f&&fixture::vectors.at("uDown").y==-1); // portrait contained, not stretched
+ pixels->time-=std::chrono::seconds(2);r.drawRemoteWindows(f,M4::identity());require(!cache.video&&cache.panel==placeholder);
+ pixels->time=std::chrono::steady_clock::now();pixels->key.publication=2;r.drawRemoteWindows(f,M4::identity());require(cache.video&&cache.videoKey.publication==2&&cache.video!=texture);
+ r.pruneRemoteVideos({});require(!cache.video&&cache.panel==placeholder);
+ r.drawRemoteWindows(f,M4::identity());++pixels->serial;fixture::uploadFail=true;r.drawRemoteWindows(f,M4::identity());require(!cache.video&&!backend.error.empty()&&!r.m_videoError.empty());
+ const auto afterFailure=fixture::allocations;r.drawRemoteWindows(f,M4::identity());require(fixture::allocations==afterFailure&&cache.panel==placeholder);
+ fixture::uploadFail=false;r.clearRemoteWindows();
+ for(int i=0;i<100;++i){pixels->key.publication++;pixels->time=std::chrono::steady_clock::now();r.drawRemoteWindows(f,M4::identity());require(fixture::live.size()==5);r.clearRemoteWindows();require(fixture::live.size()==2);}
+ std::cout<<"PASS decoded video: separate cache, TexSubImage reuse, resize, aspect containment, stale/epoch pruning, failure closes media, 100 teardown cycles\n";
+#endif
+ std::cout<<"PASS exact remote-window GL methods: allocation, local-resource isolation, PBO/pixel layout, pose-only reuse, hide/show, revision/generation, malformed pixels, partial allocation, retry bound, 100 cleanup cycles\n";
+ }catch(const std::exception& e){std::cerr<<e.what()<<'\n';return 1;}}

@@ -1,0 +1,13 @@
+{
+  "name": "egor",
+  "description": "Egor profile: graphics/culling and optional viewmodel module.",
+  "plugin_overrides": 90,
+  "multiplayer_overrides": 16,
+  "video_defaults": {
+    "width": 8192,
+    "height": 8192,
+    "fps": 30,
+    "bitrate_bps": 2500000
+  },
+  "viewmodel_asset": "user-provided; v_knife.mdl intentionally not bundled pending redistribution permission"
+}

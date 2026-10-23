@@ -1,0 +1,86 @@
+#include "avatar.hpp"
+#include "remote_player.hpp"
+@CULLING@
+#include <algorithm>
+#include <cstring>
+#include <chrono>
+#include <cmath>
+#include <format>
+#include <iostream>
+#include <numeric>
+#include <ranges>
+#include <set>
+#include <map>
+#include <utility>
+#include <stdexcept>
+using GLuint=unsigned;using GLenum=unsigned;using GLint=int;using GLsizei=int;using GLsizeiptr=std::ptrdiff_t;using GLintptr=std::ptrdiff_t;
+@CONSTANTS@
+void require(bool x,const char* message="require failed"){if(!x)throw std::runtime_error(message);}
+namespace fake {
+ unsigned next=1,vao=0,unit=GL_TEXTURE0;int created=0,deleted=0;GLenum error=0;
+ std::map<unsigned,std::vector<unsigned char>> buffers,textures;
+ std::set<unsigned> vaos;
+ std::map<GLenum,unsigned> bindings,textureUnits;
+ struct Draw{unsigned vao,joint;int count;};std::vector<Draw> draws;
+ bool failGen=false;bool throwUpload=false;
+ unsigned gen(){++created;return next++;}
+ size_t alive(){return buffers.size()+textures.size()+vaos.size();}
+}
+void glGenVertexArrays(int n,GLuint* ids){for(int i=0;i<n;++i){ids[i]=fake::failGen?0:fake::gen();if(ids[i])fake::vaos.insert(ids[i]);}}
+void glGenBuffers(int n,GLuint* ids){for(int i=0;i<n;++i){ids[i]=fake::failGen?0:fake::gen();if(ids[i])fake::buffers[ids[i]]={};}}
+void glGenTextures(int n,GLuint* ids){for(int i=0;i<n;++i){ids[i]=fake::failGen?0:fake::gen();if(ids[i])fake::textures[ids[i]]={};}}
+void glDeleteVertexArrays(int n,const GLuint* ids){for(int i=0;i<n;++i)if(ids[i]){require(fake::vaos.erase(ids[i])==1,"invalid/double VAO delete");++fake::deleted;}}
+void glDeleteBuffers(int n,const GLuint* ids){for(int i=0;i<n;++i)if(ids[i]){require(fake::buffers.erase(ids[i])==1,"invalid/double buffer delete");++fake::deleted;}}
+void glDeleteTextures(int n,const GLuint* ids){for(int i=0;i<n;++i)if(ids[i]){require(fake::textures.erase(ids[i])==1,"invalid/double texture delete");++fake::deleted;}}
+void glBindVertexArray(GLuint id){require(!id||fake::vaos.contains(id));fake::vao=id;}
+void glBindBuffer(GLenum t,GLuint id){require(!id||fake::buffers.contains(id));fake::bindings[t]=id;}
+void glActiveTexture(GLenum u){fake::unit=u;}
+void glBindTexture(GLenum,GLuint id){require(!id||fake::textures.contains(id));fake::textureUnits[fake::unit]=id;}
+void glBufferData(GLenum t,GLsizeiptr n,const void* p,GLenum){
+ if(fake::throwUpload){fake::throwUpload=false;throw std::bad_alloc();}
+ if(!fake::bindings[t])return;auto& b=fake::buffers.at(fake::bindings[t]);b.resize(n);if(p)std::memcpy(b.data(),p,n);
+}
+void glBufferSubData(GLenum t,GLintptr offset,GLsizeiptr n,const void* p){auto& b=fake::buffers.at(fake::bindings[t]);require(offset>=0&&n>=0&&size_t(offset+n)<=b.size(),"buffer upload out of range");std::memcpy(b.data()+offset,p,n);}
+void glTexStorage2D(GLenum,int,GLenum,int w,int h){auto id=fake::textureUnits[fake::unit];if(id)fake::textures.at(id).resize(w*h*4*sizeof(float));}
+void glTexSubImage2D(GLenum,int,int,int,int w,int h,GLenum,GLenum,const void* p){auto& b=fake::textures.at(fake::textureUnits[fake::unit]);require(size_t(w*h*4*sizeof(float))==b.size());std::memcpy(b.data(),p,b.size());}
+GLenum glGetError(){return std::exchange(fake::error,GL_NO_ERROR);}
+void glDrawElements(GLenum,int n,GLenum,const void*){require(fake::vaos.contains(fake::vao));fake::draws.push_back({fake::vao,fake::textureUnits[GL_TEXTURE5],n});}
+void glDrawArrays(GLenum,int,int n){require(fake::vaos.contains(fake::vao));fake::draws.push_back({fake::vao,fake::textureUnits[GL_TEXTURE5],n});}
+@NOOPS@
+@IMPLEMENTATION@
+using namespace hyprwalk;
+std::shared_ptr<SAvatarModel> model(){
+ auto m=std::make_shared<SAvatarModel>();m->path="synthetic-local.glb";m->vertices.resize(3);m->indices={0,1,2};m->joints.resize(1);m->materials.resize(1);
+ for(auto&v:m->vertices){v.weights[0]=255;v.normal[1]=1;}m->vertices[1].pos[0]=1;m->vertices[2].pos[1]=1;
+ SAvatarBatch b{};b.count=3;m->batches.push_back(b);m->triangles=1;
+ SMorphDelta d{};d.vertex=0;d.pos[0]=1;m->morphDeltas.push_back(d);m->morphs.resize(1);m->morphs[0].first=0;m->morphs[0].count=1;m->morphFirst=0;m->morphEnd=1;
+ SMapImage i;i.rgba={255,0,0,255};i.w=1;i.h=1;m->images.push_back(i);
+ return m;
+}
+struct Pose {std::vector<float> joints=std::vector<float>(12,0),morph{0};std::vector<SMapMaterial> mats{1};SAvatarFrame frame;
+ Pose(){joints[0]=joints[5]=joints[10]=1;frame.model=model();frame.joints=&joints;frame.morphs=&morph;frame.visible=true;}
+};
+int main(){int passes=0;try{
+ auto test=[&](const char* n,auto fn){fn();++passes;std::cout<<"PASS "<<n<<'\n';};
+ CRenderer r;Pose l,remote;SFrameParams f;f.avatar=l.frame;f.remoteAvatar=remote.frame;f.remotePlayer.visible=true;
+ test("local upload retains original entry point",[&]{require(r.updateAvatar(f));require(l.frame.model->vertices.empty());require(l.frame.model->images[0].rgba.empty());});
+ []<class R>(R& renderer,const SFrameParams& frame){if constexpr(requires{renderer.prepareFrustumVisibility(frame);})renderer.prepareFrustumVisibility(frame);}(r,f);
+ auto localVao=r.m_avatar.vao,localJoints=r.m_avatar.jointTex,localMorph=r.m_avatar.morphVBO;auto savedTex=fake::textures.at(localJoints);auto savedMorph=fake::buffers.at(localMorph);size_t localCount=fake::alive();
+ test("independent remote buffers textures and VAO",[&]{r.updateRemoteAvatar(f.remoteAvatar);require(r.m_remoteAvatar.live);require(r.m_remoteAvatar.vao!=localVao);require(r.m_remoteAvatar.jointTex!=localJoints);require(r.m_remoteAvatar.morphVBO!=localMorph);require(remote.frame.model->vertices.empty());require(fake::alive()>localCount);});
+ test("independent joint pose and morph updates",[&]{remote.joints[3]=2;remote.morph[0]=.8f;r.updateRemoteAvatar(f.remoteAvatar);require(fake::textures.at(localJoints)==savedTex);require(fake::buffers.at(localMorph)==savedMorph);require(r.m_remoteAvatar.staging[3]==2);require(r.m_remoteAvatar.morphW[0]==.8f);require(r.m_avatar.morphW[0]==0);});
+ test("repeated frames after CPU release reuse cache",[&]{auto count=fake::created;for(int i=0;i<100;++i){r.updateAvatar(f);r.updateRemoteAvatar(f.remoteAvatar);}require(fake::created==count);});
+ test("local and remote draw bind their own joints and VAO",[&]{fake::draws.clear();r.drawAvatar(f,M4::identity(),0,nullptr,false);r.drawAvatarInstance(r.m_remoteAvatar,f.remoteAvatar,f,M4::identity(),0,nullptr,false);require(fake::draws.size()>=2);require(fake::draws.front().vao==localVao);require(fake::draws.back().vao==r.m_remoteAvatar.vao);require(fake::draws.front().joint==localJoints);require(fake::draws.back().joint==r.m_remoteAvatar.jointTex);});
+ test("remote depth draw uses remote resource cache",[&]{fake::draws.clear();r.drawAvatarDepth(r.m_remoteAvatar,f.remoteAvatar);require(fake::draws.size()==1);require(fake::draws[0].vao==r.m_remoteAvatar.vao);});
+ test("remote pose invalidates shadow independently",[&]{fake::draws.clear();r.updateShadow(f);require(fake::draws.size()==2);auto hash=r.m_shadowCasterHash;fake::draws.clear();r.updateShadow(f);require(fake::draws.empty());remote.joints[3]=3;r.updateRemoteAvatar(f.remoteAvatar);r.updateShadow(f);require(r.m_shadowCasterHash!=hash&&fake::draws.size()==2);require(fake::textures.at(localJoints)==savedTex);});
+ test("temporary stale visibility retains CPU-released cache",[&]{f.remoteAvatar.visible=false;auto count=fake::created;r.updateRemoteAvatar(f.remoteAvatar);r.drawRemotePlayer(f,M4::identity(),0,nullptr);require(fake::created>=count);f.remoteAvatar.visible=true;r.updateRemoteAvatar(f.remoteAvatar);require(r.m_remoteAvatar.live);});
+ test("primitive hidden when real model available",[&]{r.drawRemotePlayer(f,M4::identity(),0,nullptr);require(!r.m_remotePlayerVBO&&!r.m_remotePlayerVAO);});
+ test("disconnect clears only remote resources",[&]{r.clearRemoteAvatar();require(fake::alive()==localCount);require(r.m_avatar.vao==localVao&&r.m_avatar.live);require(fake::textures.at(localJoints)==savedTex);});
+ test("failed remote upload keeps local and falls back",[&]{remote.frame.model=model();f.remoteAvatar=remote.frame;fake::error=GL_OUT_OF_MEMORY;r.updateRemoteAvatar(f.remoteAvatar);require(!r.m_remoteAvatar.live);require(!remote.frame.model->vertices.empty());require(fake::alive()==localCount);r.drawRemotePlayer(f,M4::identity(),0,nullptr);require(r.m_remotePlayerVAO&&r.m_remotePlayerVBO);});
+ test("failed model not retried per frame",[&]{auto n=fake::created;for(int i=0;i<100;++i)r.updateRemoteAvatar(f.remoteAvatar);require(fake::created==n);r.clearRemoteAvatar();});
+ test("exception during partial upload releases new resources",[&]{f.remoteAvatar.model=model();fake::throwUpload=true;r.updateRemoteAvatar(f.remoteAvatar);require(!r.m_remoteAvatar.live&&fake::alive()==localCount);r.clearRemoteAvatar();});
+ test("non-OOM GL error rejected for remote",[&]{f.remoteAvatar.model=model();fake::error=GL_INVALID_OPERATION;r.updateRemoteAvatar(f.remoteAvatar);require(!r.m_remoteAvatar.live&&fake::alive()==localCount);r.clearRemoteAvatar();});
+ test("reconnect reloads fresh CPU data not old released model",[&]{for(int i=0;i<100;++i){f.remoteAvatar.model=model();r.updateRemoteAvatar(f.remoteAvatar);require(r.m_remoteAvatar.live);r.clearRemoteAvatar();require(fake::alive()==localCount);}require(r.m_avatar.vao==localVao);});
+ test("empty selection returns to primitive without local eviction",[&]{f.remoteAvatar={};r.updateRemoteAvatar(f.remoteAvatar);r.drawRemotePlayer(f,M4::identity(),0,nullptr);require(r.m_remotePlayerVBO);r.clearRemoteAvatar();require(fake::alive()==localCount);});
+ test("full cache teardown balanced",[&]{r.destroyAvatar(r.m_avatar);r.clearRemoteAvatar();require(fake::alive()==0);require(fake::created==fake::deleted);});
+ std::cout<<passes<<"/17 resource groups passed. Instrumented GL TEST DOUBLE, not a GPU/driver test.\n";
+ }catch(const std::exception& e){std::cerr<<"FAIL after "<<passes<<": "<<e.what()<<'\n';return 1;}}

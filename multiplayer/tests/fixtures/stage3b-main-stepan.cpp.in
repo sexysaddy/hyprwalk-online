@@ -1,0 +1,731 @@
+
+#include <charconv>
+#include <format>
+#include <filesystem>
+#include <ranges>
+#include <algorithm>
+#include <source_location>
+#include "remote_avatar.hpp"
+#include "walker.hpp"
+#include <array>
+#include <set>
+#include "control.hpp"
+#include <cstdint>
+#include <functional>
+#include <iostream>
+#include <memory>
+#include <poll.h>
+#include <sstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+#include <chrono>
+#include <thread>
+#include "world.hpp"
+#include "map.hpp"
+#include "remote_player.hpp"
+#ifdef HYPRWALK_MULTIPLAYER
+#include <hyprwalk/mp/Multiplayer.hpp>
+#include <hyprwalk/mp/PlayerSync.hpp>
+#include "multiplayer_map.hpp"
+#endif
+using namespace hyprwalk;
+struct wl_event_source{int fd;int(*fn)(int,uint32_t,void*);void* data;bool removed=false;};
+struct wl_event_loop{std::vector<std::unique_ptr<wl_event_source>> sources;bool reject=false;} loop;
+constexpr uint32_t WL_EVENT_READABLE=1,WL_EVENT_HANGUP=4,WL_EVENT_ERROR=8;
+wl_event_source* wl_event_loop_add_fd(wl_event_loop* l,int fd,uint32_t,int(*fn)(int,uint32_t,void*),void* data){
+ if(l->reject)return nullptr;l->sources.push_back(std::make_unique<wl_event_source>(wl_event_source{fd,fn,data}));return l->sources.back().get();}
+int wl_event_source_remove(wl_event_source* s){s->removed=true;return 0;}
+struct Compositor{wl_event_loop* m_wlEventLoop=&loop;}compositor;auto* g_pCompositor=&compositor;
+namespace hyprwalk{void log(const std::string&) {}}
+void require(bool b,const std::source_location l=std::source_location::current()){if(!b)throw std::runtime_error("integration test failed at line "+std::to_string(l.line()));}
+void pump(){std::vector<wl_event_source*> snapshot;for(auto& p:loop.sources)snapshot.push_back(p.get());for(auto* s:snapshot){if(s->removed)continue;pollfd fd{s->fd,POLLIN,0};if(::poll(&fd,1,1)>0)s->fn(s->fd,WL_EVENT_READABLE,s->data);}}
+void wait(const std::function<bool()>& f){const auto end=std::chrono::steady_clock::now()+std::chrono::seconds(4);while(!f()){require(std::chrono::steady_clock::now()<end);pump();}}
+struct Vector2D{double x=1280,y=960;};
+struct Monitor{Vector2D m_size;};
+namespace hypr{void scheduleFrame(const std::shared_ptr<Monitor>&) {}}
+struct Screen{Vector2D logicalSize;SDesktopAnchor anchor;void setAnchor(const SDesktopAnchor& a){anchor=a;}};
+constexpr int MODE_OFF=0,MODE_ACTIVE=2;
+#ifdef HYPRWALK_MULTIPLAYER
+class StepanAdapter final : public hyprwalk::mp::IAdapter {
+  public:
+    hyprwalk::mp::PlayerSync remote;
+    std::optional<hyprwalk::mp::MapDescriptor> map;
+    std::optional<hyprwalk::mp::WorldRequest> pendingWorld;
+    std::optional<hyprwalk::mp::MapDescriptor> localMap() const override { return map; }
+    void onWorldRequest(const hyprwalk::mp::WorldRequest& request) noexcept override { pendingWorld = request; }
+    bool udpReady = false;
+    hyprwalk::mp::Id session{}, peer{};
+    void onPlayerSnapshot(const hyprwalk::mp::ReceivedPlayer& value) noexcept override {
+        if (udpReady)
+            remote.push(value);
+    }
+    hyprwalk::mp::LocalInfo localInfo() const override { return {"stepan"}; }
+    void onState(const hyprwalk::mp::Status& state) noexcept override {
+        udpReady = state.state == hyprwalk::mp::State::Connected && state.udp.state == hyprwalk::mp::UdpState::Ready &&
+                   state.world == hyprwalk::mp::WorldState::Ready;
+        if (!udpReady || session != state.session || peer != state.peerId)
+            remote.reset();
+        if (state.world == hyprwalk::mp::WorldState::Disabled || state.world == hyprwalk::mp::WorldState::Rejected)
+            pendingWorld.reset();
+        session = state.session;
+        peer = state.peerId;
+        try { hyprwalk::log("multiplayer: " + hyprwalk::mp::formatStatus(state)); } catch (...) {}
+    }
+    void onDiagnostic(const hyprwalk::mp::Diagnostic& event) noexcept override {
+        try { hyprwalk::log("multiplayer: " + event.text); } catch (...) {}
+    }
+};
+#endif
+
+constexpr uint32_t K_TAB=15,HL_MODIFIER_SHIFT=1,HL_MODIFIER_CTRL=4,HL_MODIFIER_ALT=8;
+
+namespace hyprwalk {
+    struct SAvatarFrame {
+        std::shared_ptr<SAvatarModel> model;
+        const std::vector<float>*     joints = nullptr;
+        const std::vector<float>*     morphs = nullptr;
+        const std::vector<SMapMaterial>* materials = nullptr;
+        const std::vector<uint8_t>*   shown = nullptr;
+        const std::vector<int>*       batchMaterials = nullptr;
+        M4                            transform = M4::identity();
+        bool                          visible = false;
+        bool                          firstPerson = false;
+        bool                          outlines = true;
+        float                         sky = 1, bounce = 0;
+
+        bool                          drawn(const SAvatarBatch& b) const {
+            return !shown || (size_t)b.part >= shown->size() || (*shown)[b.part];
+        }
+        std::pair<uint32_t, uint32_t> range(const SAvatarBatch& b) const {
+            return !firstPerson || b.fpCount == UINT32_MAX || !b.count ? std::pair{b.first, b.count} : std::pair{b.fpFirst, b.fpCount};
+        }
+        int                           material(const SAvatarBatch& b, size_t i) const {
+            return batchMaterials && i < batchMaterials->size() ? (*batchMaterials)[i] : b.material;
+        }
+    };
+struct SFrameParams{SAvatarFrame avatar,remoteAvatar;SRemotePlayerFrame remotePlayer;};
+namespace gl {struct CStateGuard {};}
+}
+struct BoolConfig{bool value()const{return true;}};BoolConfig* g_cfgAvatarPhysics=nullptr;
+namespace Render::GL {struct Context{void makeEGLCurrent(){}} context;Context* g_pHyprOpenGL=&context;}
+struct RendererDouble{int clears=0;void clearRemoteAvatar(){++clears;}bool remoteAvatarFailed(const std::shared_ptr<SAvatarModel>&)const{return false;}bool remoteAvatarReady(const std::shared_ptr<SAvatarModel>&)const{return false;}};
+
+class CDesktop3D{public:
+ std::shared_ptr<SAvatarModel> m_avatar;float m_avatarHeight=1.75f;RendererDouble m_renderer;
+    std::unique_ptr<CRemoteAvatar>   m_remoteAvatar;
+    wl_event_source*                 m_remoteAvatarSource = nullptr;
+    hyprwalk::mp::Id                 m_remoteAvatarPeer{}, m_remoteAvatarSession{};
+    std::string                     m_remoteAvatarSelection = "default", m_remoteAvatarError, m_remoteAvatarBlocked;
+    uint64_t                        m_remoteAvatarRevision = 1;
+    bool                            m_remoteAvatarSuspended = false;
+    void                            multiplayerAvatarUpdate();
+    void                            multiplayerAvatarFrame(SFrameParams& frame);
+    void                            clearMultiplayerAvatarGpu();
+    void                            shutdownMultiplayerAvatar();
+    std::string                     multiplayerAvatarCommand(const std::vector<std::string>& args);
+
+
+
+    std::array<bool,256> m_keys{}; std::set<uint32_t> m_consumed; bool m_jumpWasDown=false;
+    mp::OnlineMenu m_online;
+    SMenuPage onlinePage(const std::string&);
+    std::string onlineAction(const SMenuItem&);
+    CActionMenu m_menu{[this](const std::string& id){return id=="main"?actionPage(id,{}):onlinePage(id);}};
+    uint32_t customBinding=15;
+    uint32_t binding(const std::string&) {return customBinding;}
+    std::string notified;
+    void notify(const std::string& s,bool) {notified=s;}
+    std::string menuAction(const SMenuItem& it) {return it.action==MA_ONLINE?onlineAction(it):"unhandled fixture action";}
+    void menuPick(const std::optional<SMenuItem>& item);
+    struct Callback{bool cancelled=false;};
+    void press(uint32_t k,uint32_t mods,Callback& info);
+    void release(uint32_t k,Callback& info);
+    void key(uint32_t k,uint32_t mods=0){
+        Callback event; press(k,mods,event);require(event.cancelled);
+        Callback releaseEvent;release(k,releaseEvent);require(releaseEvent.cancelled);require(!m_consumed.contains(k));
+        m_menu.update(.1f,1920,1080,1.f);
+    }
+    void enterOnline(){m_menu.show("online");m_menu.update(.1f,1920,1080,1.f);}
+    void editPort(const std::string& s){key(4);require(m_menu.onlineModal());for(char c:s)key(c=='0'?11:static_cast<uint32_t>(c-'0'+1));key(28);require(!m_menu.onlineModal());}
+
+ int m_mode=MODE_ACTIVE;bool m_away=false,m_crouched=false,m_running=false,m_fly=false,m_rendererDirty=false;
+ float m_yaw=0,m_pitch=0,m_bodyYaw=0,m_mapScale=0;
+ struct Body{V3 feet,vel;bool onGround=true;}m_body;
+ struct Loader{bool loading=false;bool busy()const{return loading;}}m_mapLoader;
+ std::shared_ptr<Monitor> owner=std::make_shared<Monitor>();std::weak_ptr<Monitor> m_monitor=owner;
+ SWorld m_world;Vector2D m_worldFor;Screen m_screen;
+ void dropPlacements(){}void requestFrame(){}
+ void resetPlayer(){m_body.feet=m_world.spawn;m_body.vel={};m_yaw=m_world.spawnYaw;
+#ifdef HYPRWALK_MULTIPLAYER
+ ++m_multiplayerTeleport;
+#endif
+ }
+ std::string hyprctl(const std::string&);
+ CDesktop3D(float aspect=16.f/9){SScreenSpec s;s.aspect=aspect;m_world=buildWorld(s);
+#ifdef HYPRWALK_MULTIPLAYER
+ m_multiplayerBuiltSpec=s;
+#endif
+ }
+ ~CDesktop3D(){
+#ifdef HYPRWALK_MULTIPLAYER
+ shutdownMultiplayer();
+#endif
+ }
+#ifdef HYPRWALK_MULTIPLAYER
+    StepanAdapter                         m_multiplayerAdapter;
+    std::unique_ptr<hyprwalk::mp::Multiplayer> m_multiplayer;
+    wl_event_source*                 m_multiplayerSource = nullptr;
+    std::string                     multiplayerCommand(const std::vector<std::string>& args);
+    void                            multiplayerEvents();
+    void                            multiplayerUpdate();
+    uint32_t                        m_multiplayerTeleport = 0;
+    SScreenSpec                     m_multiplayerBuiltSpec{}, m_multiplayerSavedSpec{};
+    std::optional<SScreenSpec>       m_multiplayerSessionSpec;
+    bool                            m_multiplayerMapApplied = false;
+    std::optional<hyprwalk::mp::MapDescriptor> m_multiplayerWorldDescriptor;
+    SDesktopAnchor                  m_multiplayerSavedDesktop;
+    V3                              m_multiplayerSavedSpawn;
+    float                           m_multiplayerSavedYaw = 0;
+    bool                            multiplayerMapLocked() const;
+    bool                            multiplayerApplyMap(const hyprwalk::mp::MapDescriptor& map, std::string& error);
+    void                            multiplayerRestoreMap();
+    void                            shutdownMultiplayer();
+#endif
+};
+#ifdef HYPRWALK_MULTIPLAYER
+bool CDesktop3D::multiplayerMapLocked() const {
+    return m_multiplayer && !m_multiplayer->finished();
+}
+
+bool CDesktop3D::multiplayerApplyMap(const hyprwalk::mp::MapDescriptor& map, std::string& error) {
+    using namespace hyprwalk::mp;
+    if (m_mapLoader.busy()) { error = "local map is still loading"; return false; }
+    const auto current = multiplayerMapDescriptor(m_world, m_mapScale, m_multiplayerBuiltSpec);
+    if (!compatibleMap(current, map, error)) return false;
+    const auto mon = m_monitor.lock();
+    if (!mon) { error = "3D monitor is unavailable"; return false; }
+    SWorld rebuilt;
+    SScreenSpec spec;
+    if (map.kind == MapKind::Courtyard) {
+        spec.aspect = map.aspect; spec.height = map.height; spec.centerY = map.centerY;
+        rebuilt = buildWorld(spec);
+        if (multiplayerCourtyardCollision(rebuilt) != map.collision) {
+            error = "courtyard collision fingerprint differs after host-parameter rebuild"; return false;
+        }
+    }
+    if (!m_multiplayerMapApplied) {
+        m_multiplayerSavedSpec = m_multiplayerBuiltSpec;
+        m_multiplayerSavedDesktop = m_world.desktop;
+        m_multiplayerSavedSpawn = m_world.spawn;
+        m_multiplayerSavedYaw = m_world.spawnYaw;
+    }
+    if (map.kind == MapKind::Courtyard) {
+        m_multiplayerSessionSpec = spec;
+        m_multiplayerBuiltSpec = spec;
+        m_world = std::move(rebuilt);
+        m_worldFor = mon->m_size;
+        m_rendererDirty = true; // init() rebuilds world buffers, not the independent local-avatar cache.
+    }
+    m_world.spawn = {map.spawn.x, map.spawn.y, map.spawn.z}; m_world.spawnYaw = map.spawnYaw;
+    m_world.desktop.center = {map.desktopCenter.x, map.desktopCenter.y, map.desktopCenter.z};
+    m_world.desktop.normal = {map.desktopNormal.x, map.desktopNormal.y, map.desktopNormal.z};
+    m_world.desktop.height = map.desktopHeight;
+    m_multiplayerWorldDescriptor = map;
+    m_multiplayerMapApplied = true;
+    dropPlacements();
+    m_screen.logicalSize = mon->m_size;
+    m_screen.setAnchor(m_world.desktop);
+    resetPlayer(); // Session-only spawn; never call saveMapState() for network parameters.
+    return true;
+}
+
+void CDesktop3D::multiplayerRestoreMap() {
+    if (!m_multiplayerMapApplied) return;
+    m_multiplayerMapApplied = false;
+    m_multiplayerWorldDescriptor.reset();
+    if (m_multiplayerSessionSpec) {
+        m_world = buildWorld(m_multiplayerSavedSpec);
+        m_multiplayerBuiltSpec = m_multiplayerSavedSpec;
+        m_multiplayerSessionSpec.reset();
+        m_rendererDirty = true;
+    }
+    m_world.spawn = m_multiplayerSavedSpawn; m_world.spawnYaw = m_multiplayerSavedYaw;
+    m_world.desktop = m_multiplayerSavedDesktop;
+    dropPlacements(); m_screen.setAnchor(m_world.desktop); resetPlayer();
+}
+
+void CDesktop3D::shutdownMultiplayer() {
+    shutdownMultiplayerAvatar();
+    if (m_multiplayerSource)
+        wl_event_source_remove(m_multiplayerSource);
+    m_multiplayerSource = nullptr;
+    if (m_multiplayer)
+        m_multiplayer->shutdown();
+    m_multiplayer.reset();
+    m_multiplayerAdapter.remote.reset();
+    m_multiplayerAdapter.udpReady = false;
+    m_multiplayerAdapter.pendingWorld.reset();
+    multiplayerRestoreMap();
+}
+
+void CDesktop3D::multiplayerUpdate() {
+    multiplayerAvatarUpdate();
+    if (!m_multiplayer)
+        return;
+    hyprwalk::mp::PlayerSnapshot player;
+    player.feet = {m_body.feet.x, m_body.feet.y, m_body.feet.z};
+    player.velocity = {m_body.vel.x, m_body.vel.y, m_body.vel.z};
+    player.yaw = m_yaw;
+    player.pitch = m_pitch;
+    player.bodyYaw = m_avatar ? m_bodyYaw : m_yaw;
+    player.active = m_mode == MODE_ACTIVE && !m_away;
+    player.onGround = m_body.onGround;
+    player.running = m_running;
+    player.crouched = m_crouched;
+    player.flying = m_fly;
+    player.teleport = m_multiplayerTeleport;
+    m_multiplayer->submitPlayer(player); // Only a bounded value copy, no send()/poll() here.
+}
+
+void CDesktop3D::multiplayerEvents() {
+    if (!m_multiplayer)
+        return;
+    const auto revision = m_multiplayerAdapter.remote.revision();
+    // Main thread: bounded control/map callbacks and at most 64 player samples.
+    if (m_multiplayer->dispatch()) {
+        if (m_multiplayerSource)
+            wl_event_source_remove(m_multiplayerSource);
+        m_multiplayerSource = nullptr;
+        m_multiplayer->reap(); // No network wait: worker has already closed its sockets.
+    }
+    if (m_multiplayerAdapter.pendingWorld) {
+        const auto request = *m_multiplayerAdapter.pendingWorld;
+        m_multiplayerAdapter.pendingWorld.reset();
+        std::string error;
+        const bool applied = multiplayerApplyMap(request.map, error);
+        if (!m_multiplayer->confirmWorld({request.ticket, applied, error})) {
+            multiplayerRestoreMap(); // Connection changed while the main-thread request was pending.
+        }
+    }
+    const auto world = m_multiplayer->status().world;
+    if (world == hyprwalk::mp::WorldState::Disabled || world == hyprwalk::mp::WorldState::Rejected)
+        multiplayerRestoreMap();
+    multiplayerUpdate();
+    if (revision != m_multiplayerAdapter.remote.revision() && m_mode != MODE_OFF)
+        if (const auto mon = m_monitor.lock())
+            hypr::scheduleFrame(mon);
+}
+
+std::string CDesktop3D::multiplayerCommand(const std::vector<std::string>& args) {
+    const std::string usage = "error: multiplayer host <bind_ip> <port> | join <ip> <port> | status | leave | avatar [default|none|reload|local-file]";
+    if (args.size() < 2)
+        return usage;
+    const auto& action = args[1];
+    if (action == "avatar") return multiplayerAvatarCommand(args);
+    if (action == "status" && args.size() == 2) {
+        multiplayerEvents();
+        return hyprwalk::mp::formatStatus(m_multiplayer ? m_multiplayer->status() : hyprwalk::mp::Status{});
+    }
+    if (action == "leave" && args.size() == 2) {
+        m_remoteAvatarSuspended = true;
+        multiplayerEvents();
+        multiplayerAvatarUpdate();
+        if (m_multiplayer)
+            m_multiplayer->leave();
+        return "ok: leave requested (check multiplayer status)";
+    }
+    if ((action != "host" && action != "join") || args.size() != 4)
+        return usage;
+    unsigned port = 0;
+    const auto& text = args[3];
+    const auto parsed = std::from_chars(text.data(), text.data() + text.size(), port);
+    if (parsed.ec != std::errc{} || parsed.ptr != text.data() + text.size() || port > 65535 || (action == "join" && port == 0))
+        return "error: host port must be 0..65535; join port must be 1..65535";
+    multiplayerEvents();
+    if (m_multiplayer && !m_multiplayer->finished())
+        return "error: session active; use multiplayer leave and wait for off";
+    if (m_remoteAvatar && m_remoteAvatar->stopping() && !m_remoteAvatar->finished())
+        return "error: local avatar cleanup in progress; retry host/join";
+    shutdownMultiplayer();
+    m_remoteAvatarSuspended = false;
+    m_remoteAvatarBlocked.clear();
+    if (m_mode != MODE_ACTIVE || !m_monitor.lock())
+        return "error: enter 3D before multiplayer host/join";
+    if (m_mapLoader.busy())
+        return "error: finish loading the local map before multiplayer host/join";
+    m_multiplayerAdapter.map = multiplayerMapDescriptor(m_world, m_mapScale, m_multiplayerBuiltSpec);
+    if (std::string why; !hyprwalk::mp::validMap(*m_multiplayerAdapter.map, why))
+        return "error: unsupported network map (use courtyard or an embedded GLB): " + why;
+    hyprwalk::mp::Settings networkSettings;
+    networkSettings.enableWorld = true;
+    networkSettings.enableUdp = true;
+    m_multiplayer = std::make_unique<hyprwalk::mp::Multiplayer>(m_multiplayerAdapter, networkSettings);
+    const hyprwalk::mp::Endpoint endpoint{args[2], static_cast<uint16_t>(port)};
+    std::string error;
+    const bool started = action == "host" ? m_multiplayer->host(endpoint, error) : m_multiplayer->join(endpoint, error);
+    if (!started)
+        return "error: " + error;
+    m_multiplayerSource = wl_event_loop_add_fd(
+        g_pCompositor->m_wlEventLoop, m_multiplayer->notificationFd(), WL_EVENT_READABLE,
+        [](int, uint32_t mask, void* data) {
+            auto* self = static_cast<CDesktop3D*>(data);
+            try {
+                if (mask & (WL_EVENT_ERROR | WL_EVENT_HANGUP)) {
+                    self->shutdownMultiplayer();
+                    hyprwalk::log("multiplayer: notification source failed; session stopped");
+                } else {
+                    self->multiplayerEvents();
+                }
+            } catch (...) {
+                self->shutdownMultiplayer(); // Never let an exception cross the C event-loop callback.
+            }
+            return 0;
+        }, this);
+    if (!m_multiplayerSource) {
+        shutdownMultiplayer();
+        return "error: could not register multiplayer eventfd with Wayland";
+    }
+    return "ok: " + action + " requested (check multiplayer status for bind/connect/handshake result)";
+}
+#endif
+std::string CDesktop3D::hyprctl(const std::string& request) {
+    std::istringstream       in(request);
+    std::vector<std::string> args;
+    for (std::string s; in >> s;)
+        args.push_back(s);
+    if (!args.empty())
+        args.erase(args.begin()); // "hyprwalk"
+
+    const std::string cmd = args.empty() ? "status" : args[0];
+    auto              num = [&](size_t i, float def) {
+        try {
+            return i < args.size() ? std::stof(args[i]) : def;
+        } catch (...) { return def; }
+    };
+
+    if (cmd == "multiplayer") {
+#ifdef HYPRWALK_MULTIPLAYER
+        try { return multiplayerCommand(args); }
+        catch (const std::exception& error) {
+            shutdownMultiplayer();
+            return std::string("error: multiplayer: ") + error.what();
+        }
+#else
+        return "error: multiplayer disabled at build time (HYPRWALK_MULTIPLAYER=0)";
+#endif
+    }
+    (void)num;return "unhandled";
+}
+
+SMenuPage CDesktop3D::onlinePage(const std::string& id) {
+    const auto status = m_multiplayer ? m_multiplayer->status() : hyprwalk::mp::Status{};
+    const auto view = m_online.page(id, status, m_multiplayerAdapter.localInfo().name);
+    SMenuPage page{.title = view.title};
+    for (const auto& row : view.items) {
+        page.items.push_back({.label = row.label, .hint = row.hint,
+                              .page = row.page,
+                              .action = MA_ONLINE, .arg = static_cast<int>(row.action),
+                              .target = row.detail.empty() ? "" : id + "#" + row.label, .on = row.on, .disabled = row.disabled});
+    }
+    return page;
+}
+std::string CDesktop3D::onlineAction(const SMenuItem& item) {
+    using namespace hyprwalk::mp;
+    // Recheck current state, rather than trusting the possibly old item under the pointer.
+    const auto state = m_multiplayer ? m_multiplayer->status() : Status{};
+    const auto action = static_cast<OnlineAction>(item.arg);
+    std::string error;
+    if (action == OnlineAction::Details) {
+        m_menu.onlineMessage(item.label, m_online.details(item.target, state, m_multiplayerAdapter.localInfo().name));
+        return "ok: showing details";
+    }
+    if (action == OnlineAction::ToggleRole) {
+        error = m_online.toggleRole(state);
+    } else if (action == OnlineAction::EditAddress || action == OnlineAction::EditPort) {
+        if (OnlineMenu::busy(state)) error = "Disconnect before editing the connection form.";
+        else {
+            const auto field = action == OnlineAction::EditAddress ? OnlineField::Address : OnlineField::Port;
+            m_keys.fill(false); m_jumpWasDown = false;
+            m_menu.onlineEdit(field, item.label, field == OnlineField::Address ? m_online.address() : m_online.port(),
+                [this, field](const std::string& value) {
+                    return m_online.setField(field, value, m_multiplayer ? m_multiplayer->status() : Status{});
+                });
+        }
+    } else {
+        const auto request = m_online.request(action, state, error);
+        if (request) {
+            std::string result;
+            try {
+                // Reuse the implemented dispatcher. It starts work asynchronously and registers eventfd.
+                result = request->disconnect ? multiplayerCommand({"multiplayer", "leave"}) :
+                    multiplayerCommand({"multiplayer", request->role == Role::Host ? "host" : "join",
+                                        request->endpoint.ip, std::to_string(request->endpoint.port)});
+            } catch (const std::exception& e) {
+                shutdownMultiplayer();
+                result = std::string("error: multiplayer: ") + e.what();
+            }
+            m_online.result(result);
+            if (result.starts_with("error: ")) m_menu.onlineMessage("Connection error", result.substr(7));
+            return result;
+        }
+    }
+    const auto result = error.empty() ? std::string("ok: online form updated") : "error: " + error;
+    m_online.result(result);
+    if (!error.empty()) m_menu.onlineMessage("Online error", error);
+    return result;
+}
+void CDesktop3D::menuPick(const std::optional<SMenuItem>& item) {
+#ifdef HYPRWALK_MULTIPLAYER
+    if (hyprwalk::mp::OnlineMenu::onlinePath(m_menu.path())) {
+        m_keys.fill(false); m_jumpWasDown = false;
+    }
+#endif
+    if (!item)
+        return; // a page, or back
+    if (const std::string r = menuAction(*item); r.starts_with("error: "))
+        notify(r.substr(7), true);
+}
+void CDesktop3D::press(uint32_t k,uint32_t mods,Callback& info) {
+ const bool meta=mods&64;
+    // Online owns all key presses and their releases before game/rebind/compositor shortcuts.
+    // The existing away, shell-input and local-window typing priorities remain above this block.
+    if (m_mode == MODE_ACTIVE && m_menu.open() &&
+        (hyprwalk::mp::OnlineMenu::onlinePath(m_menu.path()) || m_menu.onlineModal())) {
+        info.cancelled = true;
+        m_consumed.insert(k);
+        m_keys.fill(false); m_jumpWasDown = false;
+        if (k == K_TAB)
+            m_menu.hide();
+        else if (m_menu.onlineModal())
+            m_menu.onlineKey(k, mods & HL_MODIFIER_SHIFT, mods & HL_MODIFIER_CTRL, mods & HL_MODIFIER_ALT, meta);
+        else
+            (void)menuKey(m_menu, k, [this](const std::optional<SMenuItem>& it) { menuPick(it); });
+        if (const auto mon = m_monitor.lock()) hypr::scheduleFrame(mon);
+        return;
+    }
+}
+void CDesktop3D::release(uint32_t k,Callback& info) {
+ const bool pressed=false;
+    if (!pressed) {
+        if (m_consumed.erase(k)) {
+            info.cancelled = true;
+            if (k < m_keys.size())
+                m_keys[k] = false;
+        }
+        return;
+    }
+}
+
+void CDesktop3D::clearMultiplayerAvatarGpu() {
+    if (Render::GL::g_pHyprOpenGL) {
+        Render::GL::g_pHyprOpenGL->makeEGLCurrent();
+        gl::CStateGuard guard;
+        m_renderer.clearRemoteAvatar();
+    }
+}
+void CDesktop3D::shutdownMultiplayerAvatar() {
+    if (m_remoteAvatarSource) wl_event_source_remove(m_remoteAvatarSource);
+    m_remoteAvatarSource = nullptr;
+    if (m_remoteAvatar) m_remoteAvatar->stop();
+    m_remoteAvatar.reset(); // joins the local loader; no callbacks after plugin unload
+    m_remoteAvatarPeer = {};
+    m_remoteAvatarSession = {};
+    clearMultiplayerAvatarGpu();
+}
+void CDesktop3D::multiplayerAvatarUpdate() {
+    if (!m_remoteAvatar && (!m_multiplayer || m_multiplayer->finished())) return;
+    using namespace hyprwalk::mp;
+    const auto status = m_multiplayer ? m_multiplayer->status() : Status{};
+    SAvatarRequest request;
+    if (m_remoteAvatarSelection == "default") {
+        if (m_avatar) { request.path = m_avatar->path; request.height = m_avatarHeight; }
+    } else if (m_remoteAvatarSelection != "none") request.path = m_remoteAvatarSelection;
+    const bool active = !m_remoteAvatarSuspended && status.state == State::Connected &&
+                        status.world == WorldState::Ready && status.udp.state == UdpState::Ready &&
+                        !request.path.empty();
+    const bool changedPeer = m_remoteAvatarPeer != status.peerId || m_remoteAvatarSession != status.session;
+    if (m_remoteAvatar && m_remoteAvatar->finished() && !m_remoteAvatar->stopping()) {
+        m_remoteAvatarError = "local avatar worker stopped unexpectedly";
+        m_remoteAvatar->stop();
+        clearMultiplayerAvatarGpu();
+    }
+    if (m_remoteAvatar && (changedPeer || !active) && !m_remoteAvatar->stopping()) {
+        m_remoteAvatar->stop(); // cancellation never waits for file loading
+        clearMultiplayerAvatarGpu();
+        requestFrame();
+    }
+    if (m_remoteAvatar && m_remoteAvatar->stopping()) {
+        if (!m_remoteAvatar->finished()) return;
+        if (m_remoteAvatarSource) wl_event_source_remove(m_remoteAvatarSource);
+        m_remoteAvatarSource = nullptr;
+        m_remoteAvatar.reset(); // finished worker; join/close AFTER event-source removal
+    }
+    if (!active) return;
+    const std::string key = idString(status.session) + idString(status.peerId) + ":" +
+                           std::to_string(m_remoteAvatarRevision) + ":" + request.path;
+    if (!m_remoteAvatar) {
+        if (m_remoteAvatarBlocked == key) return; // no per-frame retries on fd/thread failure
+        try {
+            m_remoteAvatar = std::make_unique<CRemoteAvatar>();
+            m_remoteAvatarPeer = status.peerId;
+            m_remoteAvatarSession = status.session;
+            m_remoteAvatarSource = wl_event_loop_add_fd(
+                g_pCompositor->m_wlEventLoop, m_remoteAvatar->fd(), WL_EVENT_READABLE,
+                [](int, uint32_t mask, void* data) {
+                    auto* self = static_cast<CDesktop3D*>(data);
+                    try {
+                        if (!self->m_remoteAvatar) return 0;
+                        if (mask & (WL_EVENT_ERROR | WL_EVENT_HANGUP)) {
+                            self->m_remoteAvatarError = "remote avatar event source failed";
+                            self->m_remoteAvatar->stop();
+                            self->clearMultiplayerAvatarGpu();
+                        } else {
+                            self->m_remoteAvatar->take();
+                            self->m_remoteAvatarError = self->m_remoteAvatar->error();
+                        }
+                        self->multiplayerAvatarUpdate();
+                        self->requestFrame();
+                    } catch (...) {
+                        self->shutdownMultiplayerAvatar();
+                        self->m_remoteAvatarError = "remote avatar callback failed; primitive fallback";
+                    }
+                    return 0;
+                }, this);
+            if (!m_remoteAvatarSource) throw std::runtime_error("could not register remote avatar eventfd");
+            m_remoteAvatarBlocked = key;
+            m_remoteAvatarError.clear();
+        } catch (const std::exception& e) {
+            m_remoteAvatarBlocked = key;
+            m_remoteAvatarError = e.what();
+            shutdownMultiplayerAvatar();
+            log("remote avatar: " + m_remoteAvatarError + "; primitive fallback");
+            return;
+        }
+    }
+    m_remoteAvatar->select(request, m_remoteAvatarRevision);
+}
+void CDesktop3D::multiplayerAvatarFrame(SFrameParams& f) {
+    const auto now = std::chrono::steady_clock::now();
+    const auto sample = m_multiplayerAdapter.udpReady ? m_multiplayerAdapter.remote.sample(now) : std::nullopt;
+    const auto* player = sample ? &sample->player : nullptr;
+    if (player) {
+        const auto& p = *player;
+        f.remotePlayer.feet = {p.feet.x, p.feet.y, p.feet.z};
+        f.remotePlayer.velocity = {p.velocity.x, p.velocity.y, p.velocity.z};
+        f.remotePlayer.yaw = p.yaw; f.remotePlayer.pitch = p.pitch; f.remotePlayer.bodyYaw = p.bodyYaw;
+        f.remotePlayer.onGround = p.onGround; f.remotePlayer.running = p.running;
+        f.remotePlayer.crouched = p.crouched; f.remotePlayer.flying = p.flying;
+        f.remotePlayer.visible = p.active;
+    }
+    if (!m_remoteAvatar || m_remoteAvatar->stopping()) return;
+    m_remoteAvatar->pose(player, now, !g_cfgAvatarPhysics || g_cfgAvatarPhysics->value(),
+        [this](float x, float z, float y) { return groundUnder(m_world.collision, x, z, y); });
+    const auto& anim = m_remoteAvatar->animator();
+    auto& avatar = f.remoteAvatar;
+    // Keep a hidden model bound during brief packet loss: re-uploading after its
+    // CPU data has been released would fail. Disconnect explicitly deletes it.
+    avatar.model = m_remoteAvatar->model();
+    avatar.joints = &anim.joints();
+    avatar.morphs = &anim.morphWeights();
+    avatar.materials = anim.materials();
+    avatar.shown = &anim.partsShown();
+    avatar.batchMaterials = anim.batchMaterials();
+    avatar.transform = m_remoteAvatar->transform();
+    avatar.visible = avatar.model && player && player->active;
+    avatar.firstPerson = false;
+}
+std::string CDesktop3D::multiplayerAvatarCommand(const std::vector<std::string>& args) {
+    if (args.size() == 2) {
+        const auto model = m_remoteAvatar ? m_remoteAvatar->model() : nullptr;
+        const std::string error = model && m_renderer.remoteAvatarFailed(model) ? "GPU upload failed; primitive fallback" :
+                                  m_remoteAvatar && !m_remoteAvatar->error().empty() ? m_remoteAvatar->error() : m_remoteAvatarError;
+        return std::format(R"({{"selection":"{}","model":"{}","loading":{},"gpu_ready":{},"animation":"{}","error":"{}"}})",
+            jsonEscape(m_remoteAvatarSelection), jsonEscape(model ? model->path : ""),
+            m_remoteAvatar && m_remoteAvatar->busy(), m_renderer.remoteAvatarReady(model),
+            jsonEscape(model ? m_remoteAvatar->animator().playing() : "primitive"), jsonEscape(error));
+    }
+    std::string selection = args[2];
+    for (size_t i = 3; i < args.size(); ++i) selection += " " + args[i];
+    if (selection != "reload" && selection != "default" && selection != "none") {
+        std::error_code ec;
+        auto path = std::filesystem::absolute(selection, ec);
+        if (ec) return "error: invalid local avatar path";
+        std::string ext = path.extension().string();
+        std::ranges::transform(ext, ext.begin(), [](unsigned char c) { return (char)std::tolower(c); });
+        if (ext != ".gltf" && ext != ".glb" && ext != ".vrm") return "error: remote avatar must be a local glTF, GLB or VRM";
+        selection = path.string(); // only a LOCAL file request, never sent over TCP/UDP
+    }
+    if (selection != "reload") m_remoteAvatarSelection = selection;
+    ++m_remoteAvatarRevision;
+    m_remoteAvatarError.clear();
+    m_remoteAvatarBlocked.clear();
+    multiplayerAvatarUpdate();
+    requestFrame();
+    return "ok: local remote-avatar selection updated; check multiplayer avatar for load/GPU status";
+}
+int main(int argc,char**argv){try {
+ require(argc==2);const std::string fixture=std::string(argv[1])+"/humanoid.glb";std::atomic<bool> cancel=false;
+ using namespace hyprwalk::mp;
+ CDesktop3D h(21.f/9),c(4.f/3);
+ SAvatarRequest req;req.path=fixture;h.m_avatar=loadAvatar(req,cancel).model;c.m_avatar=loadAvatar(req,cancel).model;require(h.m_avatar&&c.m_avatar);
+ // Simulate the already uploaded local model. Remote must reload its own CPU data.
+ h.m_avatar->releaseCpuData();c.m_avatar->releaseCpuData();
+ require(h.multiplayerCommand({"multiplayer","avatar"}).find("default")!=std::string::npos);
+ require(!h.m_remoteAvatar&&!c.m_remoteAvatar);
+ h.enterOnline();c.enterOnline();c.key(2);require(c.m_online.mode()==Role::Client);
+ h.editPort("0"); h.key(5); // Create Server, same actual menu action path as production.
+ wait([&]{return h.m_multiplayer && h.m_multiplayer->status().state==State::Listening;});
+ c.editPort(std::to_string(h.m_multiplayer->status().endpoint.port));c.key(5);
+ wait([&]{return h.m_multiplayerAdapter.udpReady&&c.m_multiplayerAdapter.udpReady;});
+ require(h.m_multiplayer->status().testsReceived>0 && c.m_multiplayer->status().testsReceived>0);
+ require(multiplayerCourtyardCollision(c.m_world)==multiplayerCourtyardCollision(h.m_world));
+ wait([&]{h.multiplayerUpdate();c.multiplayerUpdate();return h.m_remoteAvatar&&c.m_remoteAvatar&&h.m_remoteAvatar->model()&&c.m_remoteAvatar->model();});
+ require(h.m_remoteAvatar->model()!=h.m_avatar&&c.m_remoteAvatar->model()!=c.m_avatar);
+ require(!h.m_remoteAvatar->model()->vertices.empty());
+ SFrameParams remoteFrame;
+ wait([&]{c.multiplayerAvatarFrame(remoteFrame);return remoteFrame.remoteAvatar.visible;});
+ require(remoteFrame.remoteAvatar.model==c.m_remoteAvatar->model());
+ require(remoteFrame.remoteAvatar.joints==&c.m_remoteAvatar->animator().joints());
+ require(!remoteFrame.remoteAvatar.firstPerson);
+ // Missing model and explicit none fall back without disconnecting the world.
+ c.multiplayerCommand({"multiplayer","avatar",fixture+".missing.glb"});
+ wait([&]{c.multiplayerUpdate();return c.m_remoteAvatar&&!c.m_remoteAvatar->error().empty();});
+ require(c.multiplayerCommand({"multiplayer","avatar"}).find("error")!=std::string::npos);
+ c.multiplayerCommand({"multiplayer","avatar","none"});
+ wait([&]{c.multiplayerUpdate();return !c.m_remoteAvatar;});
+ SFrameParams fallback;c.multiplayerAvatarFrame(fallback);require(!fallback.remoteAvatar.model&&fallback.remotePlayer.visible);
+ // Actual eventfd registration failure path and explicit recovery, not per-frame retry.
+ loop.reject=true;c.multiplayerCommand({"multiplayer","avatar","default"});loop.reject=false;
+ require(!c.m_remoteAvatar&&!c.m_remoteAvatarError.empty());
+ c.multiplayerCommand({"multiplayer","avatar","reload"});
+ wait([&]{c.multiplayerUpdate();return c.m_remoteAvatar&&c.m_remoteAvatar->model();});
+
+ h.m_body.feet={7,2,9};h.multiplayerUpdate();
+ wait([&]{auto p=c.m_multiplayerAdapter.remote.sample(std::chrono::steady_clock::now());return p&&p->player.feet.x>6.5f;});
+ // All key presses and releases consumed before movement/shortcuts, without host requests.
+ h.m_keys[17]=true; h.m_jumpWasDown=true;h.key(17,HL_MODIFIER_CTRL);
+ require(!h.m_keys[17]&&!h.m_jumpWasDown);
+ h.key(7);require(h.m_menu.path()=="main/online/online-status");h.key(2);require(h.m_menu.onlineModal());h.key(1);h.key(14);
+ c.key(6); // Disconnect from Online.
+ wait([&]{return c.m_multiplayer->finished()&&!c.m_multiplayerSource&&h.m_multiplayer->status().state==State::Listening;});
+ wait([&]{h.multiplayerUpdate();c.multiplayerUpdate();return !h.m_remoteAvatar&&!c.m_remoteAvatar;});
+ c.key(5);wait([&]{return h.m_multiplayerAdapter.udpReady&&c.m_multiplayerAdapter.udpReady;});
+ wait([&]{h.multiplayerUpdate();c.multiplayerUpdate();return h.m_remoteAvatar&&c.m_remoteAvatar&&h.m_remoteAvatar->model()&&c.m_remoteAvatar->model();});
+ h.key(6);c.key(6);wait([&]{return h.m_multiplayer->finished()&&c.m_multiplayer->finished()&&!h.m_multiplayerSource&&!c.m_multiplayerSource;});
+ wait([&]{h.multiplayerUpdate();c.multiplayerUpdate();return !h.m_remoteAvatar&&!c.m_remoteAvatar;});
+ // Field modal ignores a customized action-menu digit binding; Tab cancels, not commits.
+ c.enterOnline();c.customBinding=2;c.key(4);c.key(2);require(c.m_menu.onlineModal());const auto saved=c.m_online.port();c.key(K_TAB);
+ require(!c.m_menu.open()&&c.m_online.port()==saved);c.customBinding=15;c.enterOnline();
+ c.m_mapLoader.loading=true;c.key(5);require(c.m_menu.onlineModal());require(c.notified.find("map")!=std::string::npos);c.key(1);c.m_mapLoader.loading=false;
+ // Event-source registration failure cancels/join the worker, leaving no callback.
+ loop.reject=true;h.enterOnline();h.key(5);require(!h.m_multiplayer&&h.m_menu.onlineModal());loop.reject=false;h.key(1);
+ // Active destruction in the fixture joins real Core threads. No live Hyprland is implied.
+ h.enterOnline();h.key(5);wait([&]{return h.m_multiplayer&&h.m_multiplayer->status().state==State::Listening;});
+ h.shutdownMultiplayer();c.shutdownMultiplayer();pump();
+ for(const auto& s:loop.sources)require(s->removed);
+ require(!h.m_remoteAvatar&&!c.m_remoteAvatar);
+ std::cout<<"PASS remote model default/custom/none/error/reload, independent CPU data, exact frame setup, nonblocking disconnect/reconnect, eventfd failure recovery, shutdown joins\n";
+ std::cout<<"PASS exact Online actions + input guard: real TCP/UDP/world, feet, form edits, disconnect/reconnect, key releases, no movement, modal Tab cancel, busy map, event-source failure, active shutdown\n";
+ std::cout<<"Wayland/compositor/monitor are TEST DOUBLES; actual menu+Cairo/Pango and Core sockets; not Hyprland/GL\n";
+} catch(const std::exception& e){std::cerr<<"FAIL "<<e.what()<<'\n';return 1;}}

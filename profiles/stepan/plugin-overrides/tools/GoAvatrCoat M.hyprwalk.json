@@ -1,0 +1,10931 @@
+{
+ "humanoid": {
+  "Hips": "Hips",
+  "LeftUpperLeg": "Left leg",
+  "RightUpperLeg": "Right leg",
+  "LeftLowerLeg": "Left knee",
+  "RightLowerLeg": "Right knee",
+  "LeftFoot": "Left ankle",
+  "RightFoot": "Right ankle",
+  "Spine": "Spine",
+  "Chest": "Chest",
+  "Neck": "Neck",
+  "Head": "Head",
+  "LeftShoulder": "Left shoulder",
+  "RightShoulder": "Right shoulder",
+  "LeftUpperArm": "Left arm",
+  "RightUpperArm": "Right arm",
+  "LeftLowerArm": "Left elbow",
+  "RightLowerArm": "Right elbow",
+  "LeftHand": "Left wrist",
+  "RightHand": "Right wrist",
+  "LeftToes": "Left toe",
+  "RightToes": "Right toe",
+  "Left Thumb Proximal": "Thumb0_L",
+  "Left Thumb Intermediate": "Thumb1_L",
+  "Left Index Proximal": "IndexFinger1_L",
+  "Left Index Intermediate": "IndexFinger2_L",
+  "Left Index Distal": "IndexFinger3_L",
+  "Left Middle Proximal": "MiddleFinger1_L",
+  "Left Middle Intermediate": "MiddleFinger2_L",
+  "Left Middle Distal": "MiddleFinger3_L",
+  "Left Ring Proximal": "RingFinger1_L",
+  "Left Ring Intermediate": "RingFinger2_L",
+  "Left Ring Distal": "RingFinger3_L",
+  "Left Little Proximal": "LittleFinger1_L",
+  "Left Little Intermediate": "LittleFinger2_L",
+  "Left Little Distal": "LittleFinger3_L",
+  "Right Thumb Proximal": "Thumb0_R",
+  "Right Thumb Intermediate": "Thumb1_R",
+  "Right Index Proximal": "IndexFinger1_R",
+  "Right Index Intermediate": "IndexFinger2_R",
+  "Right Index Distal": "IndexFinger3_R",
+  "Right Middle Proximal": "MiddleFinger1_R",
+  "Right Middle Intermediate": "MiddleFinger2_R",
+  "Right Middle Distal": "MiddleFinger3_R",
+  "Right Ring Proximal": "RingFinger1_R",
+  "Right Ring Intermediate": "RingFinger2_R",
+  "Right Ring Distal": "RingFinger3_R",
+  "Right Little Proximal": "LittleFinger1_R",
+  "Right Little Intermediate": "LittleFinger2_R",
+  "Right Little Distal": "LittleFinger3_R",
+  "LeftEye": "E_L",
+  "RightEye": "E_R"
+ },
+ "expressions": [
+  {
+   "name": "aa",
+   "preset": "aa",
+   "shapes": {
+    "Body/vrc.v_aa": 1.0
+   }
+  },
+  {
+   "name": "ee",
+   "preset": "ee",
+   "shapes": {
+    "Body/vrc.v_e": 1.0
+   }
+  },
+  {
+   "name": "ih",
+   "preset": "ih",
+   "shapes": {
+    "Body/vrc.v_ih": 1.0
+   }
+  },
+  {
+   "name": "oh",
+   "preset": "oh",
+   "shapes": {
+    "Body/vrc.v_oh": 1.0
+   }
+  },
+  {
+   "name": "ou",
+   "preset": "ou",
+   "shapes": {
+    "Body/vrc.v_ou": 1.0
+   }
+  },
+  {
+   "name": "blink",
+   "preset": "blink",
+   "shapes": {
+    "Body/Blink": 1.0
+   }
+  }
+ ],
+ "visemes": {
+  "pp": {
+   "Body/vrc.v_pp": 1.0
+  },
+  "ff": {
+   "Body/vrc.v_ff": 1.0
+  },
+  "th": {
+   "Body/vrc.v_th": 1.0
+  },
+  "dd": {
+   "Body/vrc.v_dd": 1.0
+  },
+  "kk": {
+   "Body/vrc.v_kk": 1.0
+  },
+  "ch": {
+   "Body/vrc.v_ch": 1.0
+  },
+  "ss": {
+   "Body/vrc.v_ss": 1.0
+  },
+  "nn": {
+   "Body/vrc.v_nn": 1.0
+  },
+  "rr": {
+   "Body/vrc.v_rr": 1.0
+  }
+ },
+ "sliders": [
+  {
+   "name": "Go/Color",
+   "value": 0.0,
+   "keys": [
+    {
+     "at": 0.0,
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.062678,
+        0.0,
+        0.0,
+        0.998034
+       ],
+       "s": [
+        1.0,
+        1.0,
+        1.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.0156,
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.062678,
+        0.0,
+        0.0,
+        0.998034
+       ],
+       "s": [
+        0.4375,
+        0.4375,
+        0.4375
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.0195,
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.062678,
+        0.0,
+        0.0,
+        0.998034
+       ],
+       "s": [
+        0.046875,
+        0.046875,
+        0.046875
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.0215,
+     "variants": [
+      "Go/Color 2.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.0234,
+     "variants": [
+      "Go/Color 2.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.0254,
+     "variants": [
+      "Go/Color 2.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.0273,
+     "variants": [
+      "Go/Color 2.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.0293,
+     "variants": [
+      "Go/Color 2.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.0312,
+     "variants": [
+      "Go/Color 3.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.0332,
+     "variants": [
+      "Go/Color 3.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.0352,
+     "variants": [
+      "Go/Color 3.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.0371,
+     "variants": [
+      "Go/Color 3.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.0391,
+     "variants": [
+      "Go/Color 3.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.041,
+     "variants": [
+      "Go/Color 4.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.043,
+     "variants": [
+      "Go/Color 4.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.0449,
+     "variants": [
+      "Go/Color 4.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.0469,
+     "variants": [
+      "Go/Color 4.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.0488,
+     "variants": [
+      "Go/Color 4.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.0508,
+     "variants": [
+      "Go/Color 5.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.0527,
+     "variants": [
+      "Go/Color 5.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.0547,
+     "variants": [
+      "Go/Color 5.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.0566,
+     "variants": [
+      "Go/Color 5.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.0586,
+     "variants": [
+      "Go/Color 5.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.0605,
+     "variants": [
+      "Go/Color 6.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.0625,
+     "variants": [
+      "Go/Color 6.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.0645,
+     "variants": [
+      "Go/Color 6.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.0664,
+     "variants": [
+      "Go/Color 6.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.0684,
+     "variants": [
+      "Go/Color 6.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.0703,
+     "variants": [
+      "Go/Color 7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.0723,
+     "variants": [
+      "Go/Color 7.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.0742,
+     "variants": [
+      "Go/Color 7.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.0762,
+     "variants": [
+      "Go/Color 7.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.0781,
+     "variants": [
+      "Go/Color 7.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.0801,
+     "variants": [
+      "Go/Color 8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.082,
+     "variants": [
+      "Go/Color 8.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.084,
+     "variants": [
+      "Go/Color 8.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.0859,
+     "variants": [
+      "Go/Color 8.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.0879,
+     "variants": [
+      "Go/Color 8.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.0898,
+     "variants": [
+      "Go/Color 9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.0918,
+     "variants": [
+      "Go/Color 9.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.0938,
+     "variants": [
+      "Go/Color 9.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.0957,
+     "variants": [
+      "Go/Color 9.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.0977,
+     "variants": [
+      "Go/Color 9.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.0996,
+     "variants": [
+      "Go/Color 10%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1016,
+     "variants": [
+      "Go/Color 10.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1035,
+     "variants": [
+      "Go/Color 10.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1055,
+     "variants": [
+      "Go/Color 10.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1074,
+     "variants": [
+      "Go/Color 10.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1094,
+     "variants": [
+      "Go/Color 10.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1113,
+     "variants": [
+      "Go/Color 11.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1133,
+     "variants": [
+      "Go/Color 11.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1152,
+     "variants": [
+      "Go/Color 11.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1172,
+     "variants": [
+      "Go/Color 11.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1191,
+     "variants": [
+      "Go/Color 11.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1211,
+     "variants": [
+      "Go/Color 12.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.123,
+     "variants": [
+      "Go/Color 12.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.125,
+     "variants": [
+      "Go/Color 12.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.127,
+     "variants": [
+      "Go/Color 12.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1289,
+     "variants": [
+      "Go/Color 12.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1309,
+     "variants": [
+      "Go/Color 13.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1328,
+     "variants": [
+      "Go/Color 13.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1348,
+     "variants": [
+      "Go/Color 13.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1367,
+     "variants": [
+      "Go/Color 13.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1387,
+     "variants": [
+      "Go/Color 13.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1406,
+     "variants": [
+      "Go/Color 14.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1426,
+     "variants": [
+      "Go/Color 14.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1445,
+     "variants": [
+      "Go/Color 14.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1465,
+     "variants": [
+      "Go/Color 14.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1484,
+     "variants": [
+      "Go/Color 14.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1504,
+     "variants": [
+      "Go/Color 15%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1523,
+     "variants": [
+      "Go/Color 15.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1543,
+     "variants": [
+      "Go/Color 15.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1562,
+     "variants": [
+      "Go/Color 15.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1582,
+     "variants": [
+      "Go/Color 15.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1602,
+     "variants": [
+      "Go/Color 16%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1621,
+     "variants": [
+      "Go/Color 16.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1641,
+     "variants": [
+      "Go/Color 16.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.166,
+     "variants": [
+      "Go/Color 16.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.168,
+     "variants": [
+      "Go/Color 16.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1699,
+     "variants": [
+      "Go/Color 17%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1719,
+     "variants": [
+      "Go/Color 17.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1738,
+     "variants": [
+      "Go/Color 17.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1758,
+     "variants": [
+      "Go/Color 17.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1777,
+     "variants": [
+      "Go/Color 17.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1797,
+     "variants": [
+      "Go/Color 18%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1816,
+     "variants": [
+      "Go/Color 18.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1836,
+     "variants": [
+      "Go/Color 18.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1855,
+     "variants": [
+      "Go/Color 18.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1875,
+     "variants": [
+      "Go/Color 18.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1895,
+     "variants": [
+      "Go/Color 18.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1914,
+     "variants": [
+      "Go/Color 19.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1934,
+     "variants": [
+      "Go/Color 19.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1953,
+     "variants": [
+      "Go/Color 19.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1973,
+     "variants": [
+      "Go/Color 19.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.1992,
+     "variants": [
+      "Go/Color 19.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2012,
+     "variants": [
+      "Go/Color 20.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2031,
+     "variants": [
+      "Go/Color 20.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2051,
+     "variants": [
+      "Go/Color 20.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.207,
+     "variants": [
+      "Go/Color 20.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.209,
+     "variants": [
+      "Go/Color 20.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2109,
+     "variants": [
+      "Go/Color 21.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2129,
+     "variants": [
+      "Go/Color 21.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2148,
+     "variants": [
+      "Go/Color 21.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2168,
+     "variants": [
+      "Go/Color 21.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2188,
+     "variants": [
+      "Go/Color 21.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2207,
+     "variants": [
+      "Go/Color 22.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2227,
+     "variants": [
+      "Go/Color 22.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2246,
+     "variants": [
+      "Go/Color 22.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2266,
+     "variants": [
+      "Go/Color 22.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2285,
+     "variants": [
+      "Go/Color 22.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2305,
+     "variants": [
+      "Go/Color 23%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2324,
+     "variants": [
+      "Go/Color 23.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2344,
+     "variants": [
+      "Go/Color 23.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2363,
+     "variants": [
+      "Go/Color 23.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2383,
+     "variants": [
+      "Go/Color 23.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2402,
+     "variants": [
+      "Go/Color 24%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2422,
+     "variants": [
+      "Go/Color 24.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2441,
+     "variants": [
+      "Go/Color 24.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2461,
+     "variants": [
+      "Go/Color 24.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.248,
+     "variants": [
+      "Go/Color 24.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.25,
+     "variants": [
+      "Go/Color 25%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.252,
+     "variants": [
+      "Go/Color 25.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2539,
+     "variants": [
+      "Go/Color 25.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2559,
+     "variants": [
+      "Go/Color 25.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2578,
+     "variants": [
+      "Go/Color 25.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2598,
+     "variants": [
+      "Go/Color 26%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2617,
+     "variants": [
+      "Go/Color 26.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2637,
+     "variants": [
+      "Go/Color 26.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2656,
+     "variants": [
+      "Go/Color 26.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2676,
+     "variants": [
+      "Go/Color 26.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2695,
+     "variants": [
+      "Go/Color 27%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2715,
+     "variants": [
+      "Go/Color 27.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2734,
+     "variants": [
+      "Go/Color 27.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2754,
+     "variants": [
+      "Go/Color 27.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2773,
+     "variants": [
+      "Go/Color 27.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2793,
+     "variants": [
+      "Go/Color 27.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2812,
+     "variants": [
+      "Go/Color 28.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2832,
+     "variants": [
+      "Go/Color 28.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2852,
+     "variants": [
+      "Go/Color 28.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2871,
+     "variants": [
+      "Go/Color 28.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2891,
+     "variants": [
+      "Go/Color 28.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.291,
+     "variants": [
+      "Go/Color 29.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.293,
+     "variants": [
+      "Go/Color 29.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2949,
+     "variants": [
+      "Go/Color 29.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2969,
+     "variants": [
+      "Go/Color 29.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.2988,
+     "variants": [
+      "Go/Color 29.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3008,
+     "variants": [
+      "Go/Color 30.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3027,
+     "variants": [
+      "Go/Color 30.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3047,
+     "variants": [
+      "Go/Color 30.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3066,
+     "variants": [
+      "Go/Color 30.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3086,
+     "variants": [
+      "Go/Color 30.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3105,
+     "variants": [
+      "Go/Color 31.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3125,
+     "variants": [
+      "Go/Color 31.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3145,
+     "variants": [
+      "Go/Color 31.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3164,
+     "variants": [
+      "Go/Color 31.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3184,
+     "variants": [
+      "Go/Color 31.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3203,
+     "variants": [
+      "Go/Color 32%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3223,
+     "variants": [
+      "Go/Color 32.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3242,
+     "variants": [
+      "Go/Color 32.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3262,
+     "variants": [
+      "Go/Color 32.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3281,
+     "variants": [
+      "Go/Color 32.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3301,
+     "variants": [
+      "Go/Color 33%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.332,
+     "variants": [
+      "Go/Color 33.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.334,
+     "variants": [
+      "Go/Color 33.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3359,
+     "variants": [
+      "Go/Color 33.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3379,
+     "variants": [
+      "Go/Color 33.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3398,
+     "variants": [
+      "Go/Color 34%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3418,
+     "variants": [
+      "Go/Color 34.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3438,
+     "variants": [
+      "Go/Color 34.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3457,
+     "variants": [
+      "Go/Color 34.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3477,
+     "variants": [
+      "Go/Color 34.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3496,
+     "variants": [
+      "Go/Color 35%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3516,
+     "variants": [
+      "Go/Color 35.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3535,
+     "variants": [
+      "Go/Color 35.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3555,
+     "variants": [
+      "Go/Color 35.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3574,
+     "variants": [
+      "Go/Color 35.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3594,
+     "variants": [
+      "Go/Color 35.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3613,
+     "variants": [
+      "Go/Color 36.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3633,
+     "variants": [
+      "Go/Color 36.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3652,
+     "variants": [
+      "Go/Color 36.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3672,
+     "variants": [
+      "Go/Color 36.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3691,
+     "variants": [
+      "Go/Color 36.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3711,
+     "variants": [
+      "Go/Color 37.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.373,
+     "variants": [
+      "Go/Color 37.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.375,
+     "variants": [
+      "Go/Color 37.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.377,
+     "variants": [
+      "Go/Color 37.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3789,
+     "variants": [
+      "Go/Color 37.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3809,
+     "variants": [
+      "Go/Color 38.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3828,
+     "variants": [
+      "Go/Color 38.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3848,
+     "variants": [
+      "Go/Color 38.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3867,
+     "variants": [
+      "Go/Color 38.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3887,
+     "variants": [
+      "Go/Color 38.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3906,
+     "variants": [
+      "Go/Color 39.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3926,
+     "variants": [
+      "Go/Color 39.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3945,
+     "variants": [
+      "Go/Color 39.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3965,
+     "variants": [
+      "Go/Color 39.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.3984,
+     "variants": [
+      "Go/Color 39.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4004,
+     "variants": [
+      "Go/Color 40%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4023,
+     "variants": [
+      "Go/Color 40.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4043,
+     "variants": [
+      "Go/Color 40.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4062,
+     "variants": [
+      "Go/Color 40.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4082,
+     "variants": [
+      "Go/Color 40.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4102,
+     "variants": [
+      "Go/Color 41%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4121,
+     "variants": [
+      "Go/Color 41.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4141,
+     "variants": [
+      "Go/Color 41.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.416,
+     "variants": [
+      "Go/Color 41.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.418,
+     "variants": [
+      "Go/Color 41.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4199,
+     "variants": [
+      "Go/Color 42%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4219,
+     "variants": [
+      "Go/Color 42.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4238,
+     "variants": [
+      "Go/Color 42.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4258,
+     "variants": [
+      "Go/Color 42.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4277,
+     "variants": [
+      "Go/Color 42.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4297,
+     "variants": [
+      "Go/Color 43%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4316,
+     "variants": [
+      "Go/Color 43.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4336,
+     "variants": [
+      "Go/Color 43.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4355,
+     "variants": [
+      "Go/Color 43.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4375,
+     "variants": [
+      "Go/Color 43.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4395,
+     "variants": [
+      "Go/Color 43.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4414,
+     "variants": [
+      "Go/Color 44.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4434,
+     "variants": [
+      "Go/Color 44.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4453,
+     "variants": [
+      "Go/Color 44.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4473,
+     "variants": [
+      "Go/Color 44.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4492,
+     "variants": [
+      "Go/Color 44.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4512,
+     "variants": [
+      "Go/Color 45.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4531,
+     "variants": [
+      "Go/Color 45.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4551,
+     "variants": [
+      "Go/Color 45.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.457,
+     "variants": [
+      "Go/Color 45.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.459,
+     "variants": [
+      "Go/Color 45.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4609,
+     "variants": [
+      "Go/Color 46.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4629,
+     "variants": [
+      "Go/Color 46.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4648,
+     "variants": [
+      "Go/Color 46.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4668,
+     "variants": [
+      "Go/Color 46.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4688,
+     "variants": [
+      "Go/Color 46.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4707,
+     "variants": [
+      "Go/Color 47.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4727,
+     "variants": [
+      "Go/Color 47.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4746,
+     "variants": [
+      "Go/Color 47.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4766,
+     "variants": [
+      "Go/Color 47.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4785,
+     "variants": [
+      "Go/Color 47.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4805,
+     "variants": [
+      "Go/Color 48%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4824,
+     "variants": [
+      "Go/Color 48.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4844,
+     "variants": [
+      "Go/Color 48.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4863,
+     "variants": [
+      "Go/Color 48.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4883,
+     "variants": [
+      "Go/Color 48.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4902,
+     "variants": [
+      "Go/Color 49%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4922,
+     "variants": [
+      "Go/Color 49.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4941,
+     "variants": [
+      "Go/Color 49.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.4961,
+     "variants": [
+      "Go/Color 49.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.498,
+     "variants": [
+      "Go/Color 49.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5,
+     "variants": [
+      "Go/Color 50%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.502,
+     "variants": [
+      "Go/Color 50.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5039,
+     "variants": [
+      "Go/Color 50.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5059,
+     "variants": [
+      "Go/Color 50.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5078,
+     "variants": [
+      "Go/Color 50.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5098,
+     "variants": [
+      "Go/Color 51%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5117,
+     "variants": [
+      "Go/Color 51.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5137,
+     "variants": [
+      "Go/Color 51.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5156,
+     "variants": [
+      "Go/Color 51.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5176,
+     "variants": [
+      "Go/Color 51.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5195,
+     "variants": [
+      "Go/Color 52%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5215,
+     "variants": [
+      "Go/Color 52.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5234,
+     "variants": [
+      "Go/Color 52.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5254,
+     "variants": [
+      "Go/Color 52.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5273,
+     "variants": [
+      "Go/Color 52.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5293,
+     "variants": [
+      "Go/Color 52.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5312,
+     "variants": [
+      "Go/Color 53.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5332,
+     "variants": [
+      "Go/Color 53.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5352,
+     "variants": [
+      "Go/Color 53.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5371,
+     "variants": [
+      "Go/Color 53.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5391,
+     "variants": [
+      "Go/Color 53.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.541,
+     "variants": [
+      "Go/Color 54.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.543,
+     "variants": [
+      "Go/Color 54.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5449,
+     "variants": [
+      "Go/Color 54.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5469,
+     "variants": [
+      "Go/Color 54.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5488,
+     "variants": [
+      "Go/Color 54.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5508,
+     "variants": [
+      "Go/Color 55.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5527,
+     "variants": [
+      "Go/Color 55.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5547,
+     "variants": [
+      "Go/Color 55.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5566,
+     "variants": [
+      "Go/Color 55.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5586,
+     "variants": [
+      "Go/Color 55.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5605,
+     "variants": [
+      "Go/Color 56.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5625,
+     "variants": [
+      "Go/Color 56.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5645,
+     "variants": [
+      "Go/Color 56.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5664,
+     "variants": [
+      "Go/Color 56.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5684,
+     "variants": [
+      "Go/Color 56.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5703,
+     "variants": [
+      "Go/Color 57%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5723,
+     "variants": [
+      "Go/Color 57.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5742,
+     "variants": [
+      "Go/Color 57.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5762,
+     "variants": [
+      "Go/Color 57.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5781,
+     "variants": [
+      "Go/Color 57.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5801,
+     "variants": [
+      "Go/Color 58%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.582,
+     "variants": [
+      "Go/Color 58.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.584,
+     "variants": [
+      "Go/Color 58.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5859,
+     "variants": [
+      "Go/Color 58.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5879,
+     "variants": [
+      "Go/Color 58.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5898,
+     "variants": [
+      "Go/Color 59%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5918,
+     "variants": [
+      "Go/Color 59.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5938,
+     "variants": [
+      "Go/Color 59.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5957,
+     "variants": [
+      "Go/Color 59.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5977,
+     "variants": [
+      "Go/Color 59.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.5996,
+     "variants": [
+      "Go/Color 60%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6016,
+     "variants": [
+      "Go/Color 60.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6035,
+     "variants": [
+      "Go/Color 60.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6055,
+     "variants": [
+      "Go/Color 60.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6074,
+     "variants": [
+      "Go/Color 60.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6094,
+     "variants": [
+      "Go/Color 60.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6113,
+     "variants": [
+      "Go/Color 61.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6133,
+     "variants": [
+      "Go/Color 61.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6152,
+     "variants": [
+      "Go/Color 61.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6172,
+     "variants": [
+      "Go/Color 61.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6191,
+     "variants": [
+      "Go/Color 61.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6211,
+     "variants": [
+      "Go/Color 62.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.623,
+     "variants": [
+      "Go/Color 62.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.625,
+     "variants": [
+      "Go/Color 62.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.627,
+     "variants": [
+      "Go/Color 62.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6289,
+     "variants": [
+      "Go/Color 62.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6309,
+     "variants": [
+      "Go/Color 63.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6328,
+     "variants": [
+      "Go/Color 63.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6348,
+     "variants": [
+      "Go/Color 63.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6367,
+     "variants": [
+      "Go/Color 63.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6387,
+     "variants": [
+      "Go/Color 63.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6406,
+     "variants": [
+      "Go/Color 64.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6426,
+     "variants": [
+      "Go/Color 64.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6445,
+     "variants": [
+      "Go/Color 64.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6465,
+     "variants": [
+      "Go/Color 64.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6484,
+     "variants": [
+      "Go/Color 64.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6504,
+     "variants": [
+      "Go/Color 65%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6523,
+     "variants": [
+      "Go/Color 65.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6543,
+     "variants": [
+      "Go/Color 65.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6562,
+     "variants": [
+      "Go/Color 65.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6582,
+     "variants": [
+      "Go/Color 65.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6602,
+     "variants": [
+      "Go/Color 66%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6621,
+     "variants": [
+      "Go/Color 66.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6641,
+     "variants": [
+      "Go/Color 66.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.666,
+     "variants": [
+      "Go/Color 66.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.668,
+     "variants": [
+      "Go/Color 66.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6699,
+     "variants": [
+      "Go/Color 67%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6719,
+     "variants": [
+      "Go/Color 67.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6738,
+     "variants": [
+      "Go/Color 67.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6758,
+     "variants": [
+      "Go/Color 67.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6777,
+     "variants": [
+      "Go/Color 67.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6797,
+     "variants": [
+      "Go/Color 68%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6816,
+     "variants": [
+      "Go/Color 68.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6836,
+     "variants": [
+      "Go/Color 68.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6855,
+     "variants": [
+      "Go/Color 68.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6875,
+     "variants": [
+      "Go/Color 68.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6895,
+     "variants": [
+      "Go/Color 68.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6914,
+     "variants": [
+      "Go/Color 69.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6934,
+     "variants": [
+      "Go/Color 69.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6953,
+     "variants": [
+      "Go/Color 69.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6973,
+     "variants": [
+      "Go/Color 69.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.6992,
+     "variants": [
+      "Go/Color 69.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7012,
+     "variants": [
+      "Go/Color 70.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7031,
+     "variants": [
+      "Go/Color 70.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7051,
+     "variants": [
+      "Go/Color 70.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.707,
+     "variants": [
+      "Go/Color 70.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.709,
+     "variants": [
+      "Go/Color 70.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7109,
+     "variants": [
+      "Go/Color 71.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7129,
+     "variants": [
+      "Go/Color 71.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7148,
+     "variants": [
+      "Go/Color 71.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7168,
+     "variants": [
+      "Go/Color 71.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7188,
+     "variants": [
+      "Go/Color 71.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7207,
+     "variants": [
+      "Go/Color 72.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7227,
+     "variants": [
+      "Go/Color 72.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7246,
+     "variants": [
+      "Go/Color 72.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7266,
+     "variants": [
+      "Go/Color 72.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7285,
+     "variants": [
+      "Go/Color 72.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7305,
+     "variants": [
+      "Go/Color 73%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7324,
+     "variants": [
+      "Go/Color 73.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7344,
+     "variants": [
+      "Go/Color 73.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7363,
+     "variants": [
+      "Go/Color 73.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7383,
+     "variants": [
+      "Go/Color 73.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7402,
+     "variants": [
+      "Go/Color 74%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7422,
+     "variants": [
+      "Go/Color 74.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7441,
+     "variants": [
+      "Go/Color 74.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7461,
+     "variants": [
+      "Go/Color 74.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.748,
+     "variants": [
+      "Go/Color 74.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.75,
+     "variants": [
+      "Go/Color 75%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.752,
+     "variants": [
+      "Go/Color 75.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7539,
+     "variants": [
+      "Go/Color 75.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7559,
+     "variants": [
+      "Go/Color 75.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7578,
+     "variants": [
+      "Go/Color 75.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7598,
+     "variants": [
+      "Go/Color 76%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7617,
+     "variants": [
+      "Go/Color 76.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7637,
+     "variants": [
+      "Go/Color 76.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7656,
+     "variants": [
+      "Go/Color 76.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7676,
+     "variants": [
+      "Go/Color 76.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7695,
+     "variants": [
+      "Go/Color 77%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7715,
+     "variants": [
+      "Go/Color 77.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7734,
+     "variants": [
+      "Go/Color 77.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7754,
+     "variants": [
+      "Go/Color 77.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7773,
+     "variants": [
+      "Go/Color 77.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7793,
+     "variants": [
+      "Go/Color 77.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7812,
+     "variants": [
+      "Go/Color 78.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7832,
+     "variants": [
+      "Go/Color 78.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7852,
+     "variants": [
+      "Go/Color 78.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7871,
+     "variants": [
+      "Go/Color 78.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7891,
+     "variants": [
+      "Go/Color 78.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.791,
+     "variants": [
+      "Go/Color 79.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.793,
+     "variants": [
+      "Go/Color 79.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7949,
+     "variants": [
+      "Go/Color 79.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7969,
+     "variants": [
+      "Go/Color 79.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.7988,
+     "variants": [
+      "Go/Color 79.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8008,
+     "variants": [
+      "Go/Color 80.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8027,
+     "variants": [
+      "Go/Color 80.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8047,
+     "variants": [
+      "Go/Color 80.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8066,
+     "variants": [
+      "Go/Color 80.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8086,
+     "variants": [
+      "Go/Color 80.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8105,
+     "variants": [
+      "Go/Color 81.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8125,
+     "variants": [
+      "Go/Color 81.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8145,
+     "variants": [
+      "Go/Color 81.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8164,
+     "variants": [
+      "Go/Color 81.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8184,
+     "variants": [
+      "Go/Color 81.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8203,
+     "variants": [
+      "Go/Color 82%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8223,
+     "variants": [
+      "Go/Color 82.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8242,
+     "variants": [
+      "Go/Color 82.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8262,
+     "variants": [
+      "Go/Color 82.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8281,
+     "variants": [
+      "Go/Color 82.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8301,
+     "variants": [
+      "Go/Color 83%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.832,
+     "variants": [
+      "Go/Color 83.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.834,
+     "variants": [
+      "Go/Color 83.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8359,
+     "variants": [
+      "Go/Color 83.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8379,
+     "variants": [
+      "Go/Color 83.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8398,
+     "variants": [
+      "Go/Color 84%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8418,
+     "variants": [
+      "Go/Color 84.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8438,
+     "variants": [
+      "Go/Color 84.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8457,
+     "variants": [
+      "Go/Color 84.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8477,
+     "variants": [
+      "Go/Color 84.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8496,
+     "variants": [
+      "Go/Color 85%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8516,
+     "variants": [
+      "Go/Color 85.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8535,
+     "variants": [
+      "Go/Color 85.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8555,
+     "variants": [
+      "Go/Color 85.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8574,
+     "variants": [
+      "Go/Color 85.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8594,
+     "variants": [
+      "Go/Color 85.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8613,
+     "variants": [
+      "Go/Color 86.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8633,
+     "variants": [
+      "Go/Color 86.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8652,
+     "variants": [
+      "Go/Color 86.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8672,
+     "variants": [
+      "Go/Color 86.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8691,
+     "variants": [
+      "Go/Color 86.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8711,
+     "variants": [
+      "Go/Color 87.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.873,
+     "variants": [
+      "Go/Color 87.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.875,
+     "variants": [
+      "Go/Color 87.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.877,
+     "variants": [
+      "Go/Color 87.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8789,
+     "variants": [
+      "Go/Color 87.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8809,
+     "variants": [
+      "Go/Color 88.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8828,
+     "variants": [
+      "Go/Color 88.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8848,
+     "variants": [
+      "Go/Color 88.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8867,
+     "variants": [
+      "Go/Color 88.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8887,
+     "variants": [
+      "Go/Color 88.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8906,
+     "variants": [
+      "Go/Color 89.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8926,
+     "variants": [
+      "Go/Color 89.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8945,
+     "variants": [
+      "Go/Color 89.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8965,
+     "variants": [
+      "Go/Color 89.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.8984,
+     "variants": [
+      "Go/Color 89.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9004,
+     "variants": [
+      "Go/Color 90%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9023,
+     "variants": [
+      "Go/Color 90.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9043,
+     "variants": [
+      "Go/Color 90.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9062,
+     "variants": [
+      "Go/Color 90.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9082,
+     "variants": [
+      "Go/Color 90.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9102,
+     "variants": [
+      "Go/Color 91%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9121,
+     "variants": [
+      "Go/Color 91.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9141,
+     "variants": [
+      "Go/Color 91.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.916,
+     "variants": [
+      "Go/Color 91.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.918,
+     "variants": [
+      "Go/Color 91.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9199,
+     "variants": [
+      "Go/Color 92%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9219,
+     "variants": [
+      "Go/Color 92.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9238,
+     "variants": [
+      "Go/Color 92.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9258,
+     "variants": [
+      "Go/Color 92.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9277,
+     "variants": [
+      "Go/Color 92.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9297,
+     "variants": [
+      "Go/Color 93%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9316,
+     "variants": [
+      "Go/Color 93.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9336,
+     "variants": [
+      "Go/Color 93.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9355,
+     "variants": [
+      "Go/Color 93.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9375,
+     "variants": [
+      "Go/Color 93.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9395,
+     "variants": [
+      "Go/Color 93.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9414,
+     "variants": [
+      "Go/Color 94.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9434,
+     "variants": [
+      "Go/Color 94.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9453,
+     "variants": [
+      "Go/Color 94.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9473,
+     "variants": [
+      "Go/Color 94.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9492,
+     "variants": [
+      "Go/Color 94.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9512,
+     "variants": [
+      "Go/Color 95.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9531,
+     "variants": [
+      "Go/Color 95.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9551,
+     "variants": [
+      "Go/Color 95.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.957,
+     "variants": [
+      "Go/Color 95.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.959,
+     "variants": [
+      "Go/Color 95.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9609,
+     "variants": [
+      "Go/Color 96.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9629,
+     "variants": [
+      "Go/Color 96.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9648,
+     "variants": [
+      "Go/Color 96.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9668,
+     "variants": [
+      "Go/Color 96.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9688,
+     "variants": [
+      "Go/Color 96.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9707,
+     "variants": [
+      "Go/Color 97.1%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9727,
+     "variants": [
+      "Go/Color 97.3%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9746,
+     "variants": [
+      "Go/Color 97.5%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9766,
+     "variants": [
+      "Go/Color 97.7%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9785,
+     "variants": [
+      "Go/Color 97.9%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9805,
+     "variants": [
+      "Go/Color 98%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9824,
+     "variants": [
+      "Go/Color 98.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9844,
+     "variants": [
+      "Go/Color 98.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9863,
+     "variants": [
+      "Go/Color 98.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9883,
+     "variants": [
+      "Go/Color 98.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9902,
+     "variants": [
+      "Go/Color 99%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9922,
+     "variants": [
+      "Go/Color 99.2%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9941,
+     "variants": [
+      "Go/Color 99.4%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.9961,
+     "variants": [
+      "Go/Color 99.6%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 0.998,
+     "variants": [
+      "Go/Color 99.8%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    },
+    {
+     "at": 1.0,
+     "variants": [
+      "Go/Color 100%"
+     ],
+     "transforms": {
+      "Logo": {
+       "r": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+       ],
+       "s": [
+        0.0,
+        0.0,
+        0.0
+       ]
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "springs": [
+  {
+   "name": "PhysicalEars_L",
+   "bones": [
+    "PhysicalEars_L"
+   ],
+   "stiffness": 1.463,
+   "drag": 0.455,
+   "gravity": 0.0,
+   "radius": 0.1,
+   "colliders": []
+  },
+  {
+   "name": "PhysicalEars_R",
+   "bones": [
+    "PhysicalEars_R"
+   ],
+   "stiffness": 1.463,
+   "drag": 0.455,
+   "gravity": 0.0,
+   "radius": 0.1,
+   "colliders": []
+  }
+ ],
+ "emotes": [
+  {
+   "file": "GoAvatrCoat M.Prepare Emote Seated.vrma",
+   "name": "Prepare Emote Seated",
+   "loop": false,
+   "hold": true
+  },
+  {
+   "file": "GoAvatrCoat M.AFK Crouching Stop.vrma",
+   "name": "AFK Crouching Stop",
+   "loop": false,
+   "hold": true
+  },
+  {
+   "file": "GoAvatrCoat M.Proning Afk Init.vrma",
+   "name": "Proning Afk Init",
+   "loop": false,
+   "hold": true
+  },
+  {
+   "file": "GoAvatrCoat M.AFK Manual.vrma",
+   "name": "AFK Manual",
+   "loop": true
+  },
+  {
+   "file": "GoAvatrCoat M.18.vrma",
+   "name": "18",
+   "loop": true,
+   "speed": 4.0
+  },
+  {
+   "file": "GoAvatrCoat M.Standing Afk Init.vrma",
+   "name": "Standing Afk Init",
+   "loop": false,
+   "hold": true
+  },
+  {
+   "file": "GoAvatrCoat M.19.vrma",
+   "name": "19",
+   "loop": false,
+   "hold": true,
+   "speed": 4.0
+  },
+  {
+   "file": "GoAvatrCoat M.AFK Standing Stop.vrma",
+   "name": "AFK Standing Stop",
+   "loop": false,
+   "hold": true
+  },
+  {
+   "file": "GoAvatrCoat M.17.vrma",
+   "name": "17",
+   "loop": false,
+   "hold": true,
+   "speed": 4.0
+  }
+ ],
+ "converter": {
+  "tool": "unity2hyprwalk",
+  "input": [
+   "Yuzu NSFW - MIAOWZ.unitypackage"
+  ],
+  "prefab": "Assets/3.0/STUFF/GoGo/GoModel/GoBone/Avatar GoBone.unity",
+  "avatar": "GoAvatrCoat M",
+  "date": "2026-10-10 14:50:04",
+  "skipped": [
+   "Next Color: it changes nothing this tool carries over",
+   "Previous Color: it changes nothing this tool carries over",
+   "VRCEmote: it changes nothing this tool carries over",
+   "Wave: it changes nothing this tool carries over",
+   "Point: it changes nothing this tool carries over",
+   "Backflip: it changes nothing this tool carries over",
+   "Sad: it changes nothing this tool carries over",
+   "Die: it changes nothing this tool carries over",
+   "Raise: it changes nothing this tool carries over",
+   "Seated Point: it changes nothing this tool carries over",
+   "Laught: it changes nothing this tool carries over",
+   "Shake: it changes nothing this tool carries over",
+   "Disaprove: it changes nothing this tool carries over",
+   "Disbelief: it changes nothing this tool carries over",
+   "T Pose: it changes nothing this tool carries over",
+   "Knockback: it changes nothing this tool carries over",
+   " VRCEmote 2: it changes nothing this tool carries over",
+   " VRCEmote 3: it changes nothing this tool carries over",
+   " VRCEmote 4: it changes nothing this tool carries over",
+   " VRCEmote 5: it changes nothing this tool carries over",
+   " VRCEmote 6: it changes nothing this tool carries over",
+   " VRCEmote 7: it changes nothing this tool carries over",
+   "Go/Stationary: it changes nothing this tool carries over",
+   " VRCEmote 8: it changes nothing this tool carries over",
+   " VRCEmote 9: it changes nothing this tool carries over",
+   " VRCEmote 10: it changes nothing this tool carries over",
+   " Go/Stationary 2: it changes nothing this tool carries over",
+   " VRCEmote 11: it changes nothing this tool carries over",
+   " VRCEmote 12: it changes nothing this tool carries over",
+   " VRCEmote 13: it changes nothing this tool carries over",
+   " VRCEmote 14: it changes nothing this tool carries over",
+   " VRCEmote 15: it changes nothing this tool carries over",
+   " Go/Stationary 3: it changes nothing this tool carries over",
+   " VRCEmote 16: it changes nothing this tool carries over",
+   " VRCEmote 17: it changes nothing this tool carries over",
+   " VRCEmote 18: it changes nothing this tool carries over",
+   " Go/Stationary 4: it changes nothing this tool carries over",
+   " VRCEmote 19: it changes nothing this tool carries over",
+   " VRCEmote 20: it changes nothing this tool carries over",
+   " VRCEmote 21: it changes nothing this tool carries over",
+   " Go/Stationary 5: it changes nothing this tool carries over",
+   " VRCEmote 22: it changes nothing this tool carries over",
+   " VRCEmote 23: it changes nothing this tool carries over",
+   " Go/Stationary 6: it changes nothing this tool carries over",
+   " VRCEmote 24: it changes nothing this tool carries over",
+   " VRCEmote 25: it changes nothing this tool carries over",
+   "GoGo Loco By Franada VRCEmote: it changes nothing this tool carries over",
+   " VRCEmote 26: it changes nothing this tool carries over",
+   "Go/StandIdle: it changes nothing this tool carries over",
+   "Widest: it changes nothing this tool carries over",
+   "Wide: it changes nothing this tool carries over",
+   "Default: it changes nothing this tool carries over",
+   "Go/CrouchIdle: it changes nothing this tool carries over",
+   " Go/CrouchIdle 2: it changes nothing this tool carries over",
+   " Go/CrouchIdle 3: it changes nothing this tool carries over",
+   " Go/CrouchIdle 4: it changes nothing this tool carries over",
+   " Go/CrouchIdle 5: it changes nothing this tool carries over",
+   " Go/CrouchIdle 6: it changes nothing this tool carries over",
+   " Go/CrouchIdle 7: it changes nothing this tool carries over",
+   " Go/CrouchIdle 8: it changes nothing this tool carries over",
+   " Go/CrouchIdle 9: it changes nothing this tool carries over",
+   " Go/CrouchIdle 10: it changes nothing this tool carries over",
+   " Go/CrouchIdle 11: it changes nothing this tool carries over",
+   " Go/CrouchIdle 12: it changes nothing this tool carries over",
+   " Go/CrouchIdle 13: it changes nothing this tool carries over",
+   "Go/ProneIdle: it changes nothing this tool carries over",
+   " Go/ProneIdle 2: it changes nothing this tool carries over",
+   " Go/ProneIdle 3: it changes nothing this tool carries over",
+   " Go/ProneIdle 4: it changes nothing this tool carries over",
+   " Go/ProneIdle 5: it changes nothing this tool carries over",
+   " Go/ProneIdle 6: it changes nothing this tool carries over",
+   " Go/ProneIdle 7: it changes nothing this tool carries over",
+   " Go/ProneIdle 8: it changes nothing this tool carries over",
+   " Go/ProneIdle 9: it changes nothing this tool carries over",
+   " Go/ProneIdle 10: it changes nothing this tool carries over",
+   "Go/ProneIdleMirror: it changes nothing this tool carries over",
+   "Go/CrouchIdleMirror: it changes nothing this tool carries over",
+   "Go/StandIdleMirror: it changes nothing this tool carries over",
+   "Hovering: it changes nothing this tool carries over",
+   " VRCEmote 27: it changes nothing this tool carries over",
+   " VRCEmote 28: it changes nothing this tool carries over",
+   " VRCEmote 29: it changes nothing this tool carries over",
+   " VRCEmote 30: it changes nothing this tool carries over",
+   " VRCEmote 31: it changes nothing this tool carries over",
+   "Go/Swimming: it changes nothing this tool carries over",
+   " Go/Stationary 7: it changes nothing this tool carries over",
+   "Go/Locomotion: it changes nothing this tool carries over",
+   "GoGo Loco By Franada VRCEmote 2: it changes nothing this tool carries over",
+   "Go/Jump&Fall: it changes nothing this tool carries over",
+   "GoGo Loco By Franada Go/Stationary: it changes nothing this tool carries over",
+   "Station: it changes nothing this tool carries over",
+   " VRCEmote 32: it changes nothing this tool carries over",
+   "Drop: it changes nothing this tool carries over",
+   " VRCEmote 33: it changes nothing this tool carries over",
+   "ON / OFF: it changes nothing this tool carries over",
+   "Go/Dash/Right/FistWeight: it changes nothing this tool carries over",
+   "GoGo Loco Go/Stationary: it changes nothing this tool carries over",
+   "Clap: a radial puppet that changes nothing this tool carries over",
+   "Go/PoseRadial: a radial puppet that changes nothing this tool carries over",
+   "Go/Height: a radial puppet that changes nothing this tool carries over",
+   "Distance: a radial puppet that changes nothing this tool carries over",
+   "Go/PuppetX: a puppet that changes nothing this tool carries over",
+   "Angle: a puppet that changes nothing this tool carries over"
+  ],
+  "warnings": [
+   "/tmp/unity2hyprwalk-n5qejuhh/pkg1/fe8518c88fcb8694e94c8d9b2d89676b/OPENME.unity uses a prefab (c0802794c7b9ff941873338202c5c7f7), which is missing",
+   "/tmp/unity2hyprwalk-n5qejuhh/pkg1/fe8518c88fcb8694e94c8d9b2d89676b/OPENME.unity uses a prefab (643e30d54e87ee8408452f49e3a1fdf5), which is missing"
+  ]
+ }
+}

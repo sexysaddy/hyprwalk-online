@@ -1,0 +1,12 @@
+# For hyprpm: hyprpm add https://github.com/Marcus-Arcadius/hyprwalk (see Install in README.md). It builds with the
+# headers hyprpm update fetched for the Hyprland you run.
+
+[repository]
+name = "hyprwalk"
+authors = ["Marcus-Arcadius"]
+
+[hyprwalk]
+description = "Your desktop as a place you walk around in: windows in 3D, an avatar, maps"
+authors = ["Marcus-Arcadius"]
+output = "hyprwalk.so"
+build = ["make -j$(nproc)"]
