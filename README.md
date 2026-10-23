@@ -2,7 +2,7 @@
 
 > 🌐 **A multiplayer online version of the `hyprwalk` project.**
 > 
-> This project is a standalone, heavy modification of the original [hyprwalk](https://github.com/Marcus-Arcadius/hyprwalk) plugin by [Marcus-Arcadius](https://github.com/Marcus-Arcadius). We have completely overhauled the movement mechanics, added full multiplayer capabilities, and implemented live window streaming.
+> This project is a standalone, heavy modification of the original [hyprwalk](https://github.com/Marcus-Arcadius/hyprwalk) plugin by [Marcus-Arcadius](https://github.com/Marcus-Arcadius)
 
 An experimental 3D desktop for Hyprland: walk around your desktop in first person, explore maps, and share selected windows with another Hyprwalk user.
 
