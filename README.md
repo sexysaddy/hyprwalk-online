@@ -1,5 +1,9 @@
 # Hyprwalk
 
+> 🌐 **A multiplayer online version of the `hyprwalk` project.**
+> 
+> This project is a standalone, heavy modification of the original [hyprwalk](https://github.com) plugin by [Marcus-Arcadius](https://github.com). We have completely overhauled the movement mechanics, added full multiplayer capabilities, and implemented live window streaming.
+
 An experimental 3D desktop for Hyprland: walk around your desktop in first person, explore maps, and share selected windows with another Hyprwalk user.
 
 > **Status:** unfinished hobby project, not a stable release. Build and runtime compatibility depends on your exact Hyprland version. Multiplayer signaling is not authenticated or encrypted; use only with people you trust over a private LAN or VPN.
