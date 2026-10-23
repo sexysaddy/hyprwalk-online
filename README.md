@@ -37,6 +37,7 @@ On Arch Linux, install the development dependencies for the Hyprland instance yo
 
 # Build without the multiplayer module / Online menu
 ./build.sh --profile egor --mode offline --jobs 4
+./build.sh --profile stepan --mode offline --jobs 4
 ```
 
 `core` builds and tests the standalone multiplayer module; it does **not** compile a Hyprland plugin. `video` requires GStreamer 1.22+ development modules and runtime factories for WebRTC, DTLS/SRTP and VP8. `offline` builds the plugin with multiplayer compiled out. The build script checks dependencies before assembling/compiling the profile and refuses to overwrite an existing output file.
