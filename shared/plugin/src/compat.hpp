@@ -1,20 +1,31 @@
 #pragma once
 
-// Hyprland 0.55/0.56 compatibility: one API for both. 0.56 moved the window and monitor lists, monitor lookup, cursor
-// warps, frame scheduling and window suspension from CCompositor to state trackers and controllers; the pointer manager
-// and cursor shape overrides into namespace Pointer; fullscreen into Fullscreen::controller(), whose modes are no
-// longer bit flags. Animated position and size became positionAnimation() / sizeAnimation(), fades alpha(); closing
-// windows and layers fade out as snapshots, so nothing in the lists is fading out; renderSoftwareCursorsFor gained a
-// flag. 0.56 is detected by its output/ headers (Monitor.hpp moved there).
+// Hyprland 0.57+ API compatibility helpers. This source uses the 0.57 render-context,
+// window backend/metadata/presentation, workspace, and Socket1 APIs; it is not compatible
+// with the old 0.55/0.56 headers. Keep the 0.56 feature macro below because those APIs
+// remain available in 0.57 (window/monitor state trackers, pointer manager, etc.).
+
+#if !__has_include(<hyprland/src/desktop/DesktopTypes.hpp>) || !__has_include(<hyprland/src/render/Context.hpp>)
+#error "Hyprwalk requires Hyprland 0.57+ headers (DesktopTypes.hpp and render/Context.hpp)"
+#endif
 
 #if __has_include(<hyprland/src/output/Monitor.hpp>)
 #define HYPRWALK_HYPRLAND_056 1
 #endif
 
-#include <hyprland/src/desktop/Workspace.hpp>
+#if __has_include(<hyprland/src/desktop/DesktopTypes.hpp>)
+#define HYPRWALK_HYPRLAND_057 1
+#endif
+
+#include <hyprland/src/desktop/DesktopTypes.hpp>
 #include <hyprland/src/desktop/view/LayerSurface.hpp>
 #include <hyprland/src/desktop/view/Popup.hpp>
-#include <hyprland/src/desktop/view/Window.hpp>
+#include <hyprland/src/desktop/view/window/Window.hpp>
+#ifdef HYPRWALK_HYPRLAND_057
+#include <hyprland/src/workspace/HLWorkspace.hpp>
+#else
+#include <hyprland/src/desktop/Workspace.hpp>
+#endif
 #ifdef HYPRWALK_HYPRLAND_056
 #include <hyprland/src/desktop/state/GlobalWindowController.hpp>
 #include <hyprland/src/desktop/state/ViewState.hpp>
@@ -208,7 +219,7 @@ namespace hyprwalk::hypr {
     // a fullscreen window over it keeps input from it (isInputBlocked(INPUT_BLOCK_BELOW_FULLSCREEN))
     inline bool blockedBelowFullscreen(const PHLWINDOW& w) {
 #ifdef HYPRWALK_HYPRLAND_056
-        return w->isInputBlockedReasonAnyOf(Desktop::View::INPUT_BLOCK_BELOW_FULLSCREEN);
+        return w->isInputBlockedReasonAnyOf(Desktop::View::FOCUS_BLOCK_BELOW_FULLSCREEN);
 #else
         return w->isInputBlocked(Desktop::View::INPUT_BLOCK_BELOW_FULLSCREEN);
 #endif

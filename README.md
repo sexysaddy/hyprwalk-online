@@ -8,7 +8,7 @@
 
 An experimental 3D desktop for Hyprland: walk around your desktop in first person, explore maps, and share selected windows with another Hyprwalk user.
 
-> **Status:** unfinished hobby project, not a stable release. Build and runtime compatibility depends on your exact Hyprland version. Multiplayer signaling is not authenticated or encrypted; use only with people you trust over a private LAN or VPN.
+> **Status:** unfinished hobby project, not a stable release. The current source targets Hyprland 0.57+ (the 0.57 render-context and window APIs). Multiplayer signaling is not authenticated or encrypted; use only with people you trust over a private LAN or VPN.
 
 ## Highlights
 
@@ -23,7 +23,7 @@ An experimental 3D desktop for Hyprland: walk around your desktop in first perso
 
 ## Build
 
-On Arch Linux, install the development dependencies for the Hyprland instance you're running, plus a C++ compiler, `make`, `pkg-config`, Python 3 and the GStreamer WebRTC/VP8 development and runtime plugins. Hyprland plugin ABI compatibility matters: a successful compile against another version does not guarantee that it will load.
+On Arch Linux, install the development dependencies for the Hyprland instance you're running, plus a C++ compiler, `make`, `pkg-config`, Python 3 and the GStreamer WebRTC/VP8 development and runtime plugins. This source targets **Hyprland 0.57+**; the build must use headers and `hyprland.pc` matching the compositor you will load it into. Hyprland's plugin API hash is checked at load time, so a build against another version is rejected.
 
 ```bash
 # Source checks, profile assembly, graphics/viewmodel tests and both standalone cores
@@ -43,6 +43,39 @@ On Arch Linux, install the development dependencies for the Hyprland instance yo
 ```
 
 `core` builds and tests the standalone multiplayer module; it does **not** compile a Hyprland plugin. `video` requires GStreamer 1.22+ development modules and runtime factories for WebRTC, DTLS/SRTP and VP8. `offline` builds the plugin with multiplayer compiled out. The build script checks dependencies before assembling/compiling the profile and refuses to overwrite an existing output file.
+
+### Hyprland 0.57 configuration and plugin loading
+
+Hyprland 0.57 removed the legacy `hyprland.conf`/hyprlang config loader. Use `~/.config/hypr/hyprland.lua` and load the built plugin from Lua (or with `hyprctl plugin load`):
+
+```lua
+hl.plugin.load("/absolute/path/to/hyprwalk-egor-video.so")
+
+hl.config({
+    plugin = {
+        hyprwalk = {
+            wallpaper = true,
+            -- Add plugin settings here, e.g. map = "/home/user/maps/world.glb",
+        },
+    },
+})
+```
+
+Load the plugin before setting its `plugin.hyprwalk` values so its config keys are registered first. The plugin's `hyprctl hyprwalk ...` commands and dispatcher names remain available after load. A failure to parse `hyprland.conf` on 0.57 is a compositor config-format migration issue, separate from a plugin crash; a crash during `hl.plugin.load()` still needs the Hyprland log/backtrace to identify its exact cause.
+
+### Troubleshooting: `API version mismatch`
+
+The 0.57.0 and 0.57.1 upstream releases define `HYPRLAND_API_VERSION` as `0.2`. The loader compares the string returned by `pluginAPIVersion()` with its own value **before calling `pluginInit()`**. This is separate from the later compositor/client header-hash check. The build script now prints the API macro selected through `pkg-config` and aborts on 0.57.0/0.57.1 if it is not `0.2`.
+
+If you still see this error, make sure the exact newly built file is the one being loaded. Check the macro selected by the build with:
+
+```bash
+printf '#include <hyprland/src/plugins/PluginAPI.hpp>\n' | \
+  g++ $(pkg-config --cflags hyprland) -std=c++26 -dM -E -x c++ - | \
+  grep '^#define HYPRLAND_API_VERSION'
+```
+
+For upstream 0.57.1 the expected output is `#define HYPRLAND_API_VERSION "0.2"`. If it differs, the development headers are stale/mixed even if `pkg-config --modversion hyprland` prints `0.57.1`; refresh the matching Hyprland development package or `hyprpm` headers, then rebuild. Do not edit `PLUGIN_API_VERSION()` to hardcode a value: the next header-hash check exists to prevent loading a binary built against a different compositor revision.
 
 ## Repository layout
 

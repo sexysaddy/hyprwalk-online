@@ -58,6 +58,7 @@ build_nix() {
 
     nix develop "$DRV^*" --command bash -c "
         export PKG_CONFIG_PATH='$DEV/share/pkgconfig':'$PW_PC':\"\$PKG_CONFIG_PATH\"
+        ./tools/check-hyprland-api.sh '' \$(pkg-config --modversion hyprland)
         make -j\$(nproc) $*
     "
 }
@@ -86,6 +87,9 @@ development package (Arch: hyprland; Debian, Ubuntu: hyprland-dev; openSUSE, Fed
     headers="$(pkg-config --modversion hyprland)"
     echo ":: Hyprland: ${HYPR_BIN:-not found}${running:+ ($running)}"
     echo ":: headers:  $headers ($(pkg-config --variable=prefix hyprland))"
+    # Semver from hyprland.pc can look correct even when PluginAPI.hpp is stale.
+    # Check the actual macro that PLUGIN_API_VERSION() will return.
+    "$(pwd)/tools/check-hyprland-api.sh" "$running" "$headers"
     if [[ -n "$running" && "$running" != "$headers" ]]; then
         echo ":: warning: these headers are $headers's but Hyprland $running runs, and a plugin only loads into the Hyprland" >&2
         echo "   it was built for. After updating Hyprland, log out and back in, then build again." >&2

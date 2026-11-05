@@ -49,7 +49,10 @@
 #include <hyprland/src/desktop/state/FocusState.hpp>
 #include <hyprland/src/desktop/view/LayerSurface.hpp>
 #include <hyprland/src/desktop/view/Popup.hpp>
-#include <hyprland/src/desktop/view/Window.hpp>
+#include <hyprland/src/desktop/view/window/Window.hpp>
+#include <hyprland/src/desktop/view/window/WindowMetadata.hpp>
+#include <hyprland/src/desktop/view/window/WindowPresentation.hpp>
+#include <hyprland/src/ipc/s1/S1.hpp>
 #include <hyprland/src/errorOverlay/Overlay.hpp>
 #include <hyprland/src/event/EventBus.hpp>
 #include <hyprland/src/desktop/view/WLSurface.hpp>
@@ -528,6 +531,10 @@ class CDesktop3D {
     bool                          away() const {
         return m_away;
     }
+    bool                          rendersOn(const void* monitor) const {
+        const auto mon = m_monitor.lock();
+        return m_mode != MODE_OFF && mon && mon.get() == monitor;
+    }
 
     std::string                   hyprctl(const std::string& request);
     std::string                   menuCommand(const std::vector<std::string>& args);
@@ -968,13 +975,12 @@ class CDesktop3D {
         } look;
     } m_tiling;
 
-    bool                      m_prevDSBlocked = false;
     UP<SEventLoopDoLaterLock> m_restoreLater;
 
     // Hyprland glue
     std::vector<CHyprSignalListener> m_listeners;
     wl_event_source*                 m_configTimer = nullptr; // config poll
-    SP<SHyprCtlCommand>              m_ctlCommand;
+    SP<IPC::Socket1::SCommand>              m_ctlCommand;
 #ifdef HYPRWALK_MULTIPLAYER
     EgorAdapter                         m_multiplayerAdapter;
     hyprwalk::mp::OnlineMenu m_online;
@@ -1044,6 +1050,7 @@ class CDesktop3D {
     CFunctionHook*                   m_hookFrame  = nullptr;
     CFunctionHook*                   m_hookSoftCursor = nullptr;
     CFunctionHook*                   m_hookDiscard    = nullptr;
+    CFunctionHook*                   m_hookDirectScanout = nullptr;
     // aquamarine idle events holding removed headless outputs (holdOutput)
     std::vector<SP<std::function<void()>>> m_outputHolds;
 
@@ -1186,7 +1193,7 @@ class CDesktop3D {
     void                             updateShell(float dt);
     void                             shellPointer(uint32_t timeMs = 0);
     void                             shellMotion(const IPointer::SMotionEvent& e);
-    void                             drawShell(const PHLMONITOR& mon);
+    void                             drawShell(Render::CRenderContext& ctx, const PHLMONITOR& mon);
     void                             exitNow();
     void                             restore();
     void                             resetPlayer();
@@ -1212,15 +1219,15 @@ static std::unique_ptr<CDesktop3D> g_p3D;
 
 class C3DElement : public IPassElement {
   public:
-    std::vector<UP<IPassElement>> draw() override {
+    std::vector<UP<IPassElement>> draw(Render::CRenderContext& ctx) override {
         if (!g_p3D)
             return {};
         return g_p3D->drawFrame();
     }
-    bool needsLiveBlur() override {
+    bool needsLiveBlur(Render::CRenderContext& ctx) override {
         return false;
     }
-    bool needsPrecomputeBlur() override {
+    bool needsPrecomputeBlur(Render::CRenderContext& ctx) override {
         return false;
     }
     const char* passName() override {
@@ -1229,16 +1236,16 @@ class C3DElement : public IPassElement {
     ePassElementType type() override {
         return EK_CUSTOM;
     }
-    bool undiscardable() override {
+    bool undiscardable(Render::CRenderContext& ctx) override {
         return true;
     }
-    std::optional<CBox> boundingBox() override {
+    std::optional<CBox> boundingBox(Render::CRenderContext& ctx) override {
         const auto mon = g_p3D ? g_p3D->monitor() : nullptr;
         if (!mon)
             return std::nullopt;
         return CBox{{0, 0}, mon->m_size};
     }
-    CRegion opaqueRegion() override {
+    CRegion opaqueRegion(Render::CRenderContext& ctx) override {
         const auto mon = g_p3D ? g_p3D->monitor() : nullptr;
         if (!mon)
             return {};
@@ -1255,8 +1262,9 @@ namespace {
     using FnMouseWheel = void (*)(void*, IPointer::SAxisEvent, SP<IPointer>);
     using FnFrame      = void (*)(void*);
     template <typename... Flags> // hypr::SOFT_CURSOR_FLAGS
-    using FnSoftCursor = void (*)(void*, PHLMONITOR, const Time::steady_tp&, CRegion&, std::optional<Vector2D>, Flags...);
-    using FnDiscard    = void (*)(CSurfacePassElement*);
+    using FnSoftCursor = void (*)(void*, Render::CRenderContext&, PHLMONITOR, const Time::steady_tp&, CRegion&, std::optional<Vector2D>, Flags...);
+    using FnDiscard    = void (*)(CSurfacePassElement*, Render::CRenderContext&);
+    using FnDirectScanout = bool (*)(void*);
 
     CFunctionHook* g_moved  = nullptr;
     CFunctionHook* g_warp   = nullptr;
@@ -1265,8 +1273,15 @@ namespace {
     CFunctionHook* g_frame  = nullptr;
     CFunctionHook* g_softCursor = nullptr;
     CFunctionHook* g_discard    = nullptr;
+    CFunctionHook* g_directScanout = nullptr;
     // device of the wheel event being handled (input.mouse.axis doesn't carry it)
     WP<IPointer> g_wheelPointer;
+
+    bool hkDirectScanout(void* self) {
+        if (g_p3D && g_p3D->rendersOn(self))
+            return false;
+        return g_directScanout && ((FnDirectScanout)g_directScanout->m_original)(self);
+    }
 
     void           hkMouseMoved(void* self, IPointer::SMotionEvent e) {
         if (g_p3D && g_p3D->onRelativeMotion(e))
@@ -1277,20 +1292,20 @@ namespace {
     // in 3D the plugin draws the app's cursor on its panel: skip Hyprland's software cursor, but keep sending the
     // cursor surface its frame callbacks
     template <typename... Flags>
-    void hkSoftCursors(void* self, PHLMONITOR mon, const Time::steady_tp& now, CRegion& damage, std::optional<Vector2D> at, Flags... flags) {
+    void hkSoftCursors(void* self, Render::CRenderContext& ctx, PHLMONITOR mon, const Time::steady_tp& now, CRegion& damage, std::optional<Vector2D> at, Flags... flags) {
         if (g_p3D && g_p3D->holdsPointer()) {
             if (const auto surf = hypr::pointer()->currentCursorImage().surface.lock(); surf && surf->resource())
                 surf->resource()->frame(now);
             return;
         }
-        ((FnSoftCursor<Flags...>)g_softCursor->m_original)(self, mon, now, damage, at, flags...);
+        ((FnSoftCursor<Flags...>)g_softCursor->m_original)(self, ctx, mon, now, damage, at, flags...);
     }
 
     // surfaces we draw get presented feedback after the frame, not Hyprland's "discarded"
-    void hkDiscard(CSurfacePassElement* self) {
+    void hkDiscard(CSurfacePassElement* self, Render::CRenderContext& ctx) {
         if (g_p3D && self && g_p3D->drawsSurface(self->m_data.surface.get()))
             return;
-        ((FnDiscard)g_discard->m_original)(self);
+        ((FnDiscard)g_discard->m_original)(self, ctx);
     }
 
     void hkMouseWarp(void* self, IPointer::SMotionAbsoluteEvent e) {
@@ -1353,6 +1368,7 @@ void CDesktop3D::init() {
     m_hookSoftCursor = g_softCursor = hookByName("renderSoftwareCursorsFor", "CPointerManager::renderSoftwareCursorsFor(",
                                                   hypr::SOFT_CURSOR_FLAGS == 2 ? (void*)&hkSoftCursors<bool, bool> : (void*)&hkSoftCursors<bool>);
     m_hookDiscard    = g_discard    = hookByName("discard", "CSurfacePassElement::discard(", (void*)&hkDiscard);
+    m_hookDirectScanout = g_directScanout = hookByName("attemptDirectScanout", "CMonitor::attemptDirectScanout(", (void*)&hkDirectScanout);
 
     if (!m_hookMoved)
         notify("couldn't hook mouse motion: mouse look won't work (arrow keys still do)", true);
@@ -1366,19 +1382,16 @@ void CDesktop3D::init() {
             exitNow();
             return;
         }
-        g_pHyprRenderer->m_directScanoutBlocked = true;
         g_pHyprRenderer->ensureCursorRenderingMode(); // (hkEnsureCursor)
         // Do not damage the whole output here: that would keep a static scene in a permanent render loop.
         // Input, surface damage and the one-shot frame timer schedule the next frame when needed.
     }));
 
-    m_listeners.emplace_back(ev.render.stage.listen([this](eRenderStage stage) {
+    m_listeners.emplace_back(ev.render.stage.listen([this](const Event::SRenderStageEvent& sev) { const auto stage = sev.stage;
         if (stage == RENDER_POST) {
-            // presented feedback for what we drew, at the monitor's pace (hkDiscard held back "discarded")
-            // OpenGL::end() clears renderData.pMonitor BEFORE RENDER_POST in Hyprland 0.56.2.
-            // Use the owner captured by the plugin, and never schedule continuation from this phase.
-            const auto mon = m_monitor.lock();
-            if (m_mode == MODE_OFF || !mon)
+            // Presented feedback for what we drew, using the monitor supplied with RENDER_POST.
+            const auto mon = sev.monitor;
+            if (m_mode == MODE_OFF || !mon || mon != m_monitor.lock())
                 return;
             if (m_renderedSceneThisFrame) {
                 for (const auto& p : m_panels)
@@ -1391,8 +1404,8 @@ void CDesktop3D::init() {
         }
         if (stage != RENDER_LAST_MOMENT || m_mode == MODE_OFF)
             return;
-        const auto mon = g_pHyprRenderer->m_renderData.pMonitor.lock();
-        if (!mon || mon != m_monitor.lock())
+        const auto mon = sev.monitor;
+        if (!mon || !sev.context || mon != m_monitor.lock())
             return;
         if (g_pSessionLockManager->isSessionLocked()) {
             exitNow();
@@ -1420,15 +1433,15 @@ void CDesktop3D::init() {
         // Pass simplification and the final output copy must see the WHOLE 3D texture,
         // including cached frames and black bars. This changes only this already-started
         // render pass; it does not damage the ring or schedule an idle frame.
-        const CRegion full{CBox{0, 0, mon->m_transformedSize.x, mon->m_transformedSize.y}};
-        g_pHyprRenderer->m_renderData.damage.add(full);
-        g_pHyprRenderer->m_renderData.finalDamage.add(full);
-        g_pHyprRenderer->m_renderPass.add(makeUnique<C3DElement>());
-        drawShell(mon);
+        const CRegion full{CBox{{0, 0}, {mon->m_transformedSize.x, mon->m_transformedSize.y}}};
+        sev.context->get().m_data.damage.add(full);
+        sev.context->get().m_data.finalDamage.add(full);
+        sev.context->get().m_pass.add(makeUnique<C3DElement>());
+        drawShell(sev.context->get(), mon);
         // notifications and the error bar went under the 3D view: draw them again on top
         if (mon == Desktop::focusState()->monitor()) {
-            Notification::overlay()->draw(mon);
-            ErrorOverlay::overlay()->draw();
+            Notification::overlay()->draw(sev.context->get(), mon);
+            ErrorOverlay::overlay()->draw(sev.context->get());
         }
         // the cursor of the layer over the view
         static auto PINVISIBLE = CConfigValue<Config::INTEGER>("cursor:invisible");
@@ -1437,9 +1450,9 @@ void CDesktop3D::init() {
                 const Vector2D size = hypr::pointer()->cursorSizeLogical();
                 CTexPassElement::SRenderData cursor;
                 cursor.tex = tex;
-                cursor.box = CBox{(m_shell.pointer - hypr::pointer()->hotspot()) * mon->m_scale, size * mon->m_scale};
+                cursor.box = CBox{{(m_shell.pointer - hypr::pointer()->hotspot()) * mon->m_scale}, {size * mon->m_scale}};
                 cursor.a   = 1.f;
-                g_pHyprRenderer->m_renderPass.add(makeUnique<CTexPassElement>(std::move(cursor)));
+                sev.context->get().m_pass.add(makeUnique<CTexPassElement>(std::move(cursor)));
             }
         // Continue only while some scene state needs time to advance. Static views are redrawn by
         // normal Hyprland damage/input events; no permanent busy frame loop is required.
@@ -1558,10 +1571,10 @@ void CDesktop3D::init() {
         this);
     wl_event_source_timer_update(m_configTimer, 1000);
 
-    m_ctlCommand = HyprlandAPI::registerHyprCtlCommand(PHANDLE, SHyprCtlCommand{
+    m_ctlCommand = HyprlandAPI::registerHyprCtlCommand(PHANDLE, IPC::Socket1::SCommand{
                                                                     .name  = "hyprwalk",
-                                                                    .exact = false,
-                                                                    .fn    = [this](eHyprCtlOutputFormat, std::string request) { return hyprctl(request); },
+                                                                    .match = IPC::Socket1::COMMAND_MATCH_PREFIX,
+                                                                    .handler = [this](const IPC::Socket1::SRequest& req) { return IPC::Socket1::SResponse{hyprctl(req.command)}; },
                                                                 });
 
     HyprlandAPI::addDispatcherV2(PHANDLE, "hyprwalk:toggle", [this](std::string) {
@@ -1616,7 +1629,6 @@ void CDesktop3D::shutdown() {
     shutdownMultiplayer(); // Remove callbacks, cancel and JOIN before any plugin code can be unloaded.
 #endif
     // Hyprland clears the render pass only at the next frame; a leftover element's destructor would run after unload
-    g_pHyprRenderer->m_renderPass.removeAllOfType(C3D_PASS_NAME);
 
     m_followLater.reset();
     if (m_mode != MODE_OFF) {
@@ -1627,12 +1639,12 @@ void CDesktop3D::shutdown() {
         restore();
     }
 
-    for (auto** h : {&m_hookMoved, &m_hookWarp, &m_hookCursor, &m_hookWheel, &m_hookFrame, &m_hookSoftCursor, &m_hookDiscard}) {
+    for (auto** h : {&m_hookMoved, &m_hookWarp, &m_hookCursor, &m_hookWheel, &m_hookFrame, &m_hookSoftCursor, &m_hookDiscard, &m_hookDirectScanout}) {
         if (*h)
             HyprlandAPI::removeFunctionHook(PHANDLE, *h);
         *h = nullptr;
     }
-    g_moved = g_warp = g_cursor = g_wheel = g_frame = g_softCursor = g_discard = nullptr;
+    g_moved = g_warp = g_cursor = g_wheel = g_frame = g_softCursor = g_discard = g_directScanout = nullptr;
     g_wheelPointer.reset();
 
     m_listeners.clear();
@@ -2352,6 +2364,10 @@ bool CDesktop3D::enter(PHLMONITOR mon) {
         notify("the 3D renderer failed to start earlier, check the Hyprland log", true);
         return false;
     }
+    if (!m_hookDirectScanout) {
+        notify("cannot enter 3D: Hyprland direct-scanout hook is unavailable", true);
+        return false;
+    }
 
     if (const std::string want = configuredMonitor(); !mon && !want.empty()) {
         mon = monitorNamed(want);
@@ -2369,8 +2385,6 @@ bool CDesktop3D::enter(PHLMONITOR mon) {
 
     if (m_restoreLater)
         m_restoreLater.reset(); // still leaving 3D: state saved already
-    else
-        m_prevDSBlocked = g_pHyprRenderer->m_directScanoutBlocked;
 
     m_monitor = mon;
     m_mode    = MODE_ENTERING;
@@ -2394,7 +2408,7 @@ bool CDesktop3D::enter(PHLMONITOR mon) {
     m_fullscreen.declined.clear();
     m_fullscreen.fresh.clear();
     for (const auto& w : hypr::windows())
-        if (w && w->m_isMapped && hypr::fullscreen(w))
+        if (w && w->mapped() && hypr::fullscreen(w))
             m_fullscreen.declined.emplace_back(w);
 
     // bring the cursor and focus to the 3D monitor, so new windows open there
@@ -2405,7 +2419,6 @@ bool CDesktop3D::enter(PHLMONITOR mon) {
     Desktop::focusState()->rawMonitorFocus(mon);
     unfocusOthers(mon);
 
-    g_pHyprRenderer->m_directScanoutBlocked = true;
     lockCursors(true);
     g_pHyprRenderer->ensureCursorRenderingMode(); // hkEnsureCursor
     g_pHyprRenderer->damageMonitor(mon);
@@ -2760,9 +2773,7 @@ void CDesktop3D::restore() {
     m_panels.clear();
     m_drawnSurfaces.clear();
 
-    g_pHyprRenderer->m_directScanoutBlocked = m_prevDSBlocked;
     lockCursors(false);
-    g_pHyprRenderer->setCursorHidden(false);
     g_pHyprRenderer->ensureCursorRenderingMode();
     g_pInputManager->simulateMouseMovement();
     pointerFrame(); // (as going away does)
@@ -2810,7 +2821,7 @@ std::string CDesktop3D::setTyping(bool on) {
     m_menu.hide();
     if (w != Desktop::focusState()->window())
         Desktop::focusState()->fullWindowFocus(w, Desktop::FOCUS_REASON_CLICK);
-    notify(std::format("typing into {}: Super+Esc to walk again", w->m_title.empty() ? w->m_class : w->m_title));
+    notify(std::format("typing into {}: Super+Esc to walk again", w->metadata().title().empty() ? classOf(w) : w->metadata().title()));
     return "typing";
 }
 
@@ -3787,7 +3798,7 @@ void CDesktop3D::update() {
     // drawn windows Hyprland doesn't render (under a fullscreen one) get no frame callbacks and would freeze
     for (const auto& p : m_panels)
         if (const auto w = p.kind == PANEL_WINDOW && !m_placements.contains(p.key) ? p.window.lock() : nullptr;
-            w && w->m_isMapped && !g_pHyprRenderer->shouldRenderWindow(w, mon) && w->wlSurface() && w->wlSurface()->resource())
+            w && w->mapped() && !g_pHyprRenderer->shouldRenderWindow(w, mon) && w->wlSurface() && w->wlSurface()->resource())
             w->wlSurface()->resource()->breadthfirst([&now](SP<CWLSurfaceResource> s, const Vector2D&, void*) { s->frame(now); }, nullptr);
     updateShell(dt);
     updatePlacements(dt, mon);
@@ -3806,11 +3817,11 @@ void CDesktop3D::update() {
         for (const auto& s : p.surfaces)
             if (const auto res = s.surface.lock())
                 m_drawnSurfaces.insert(res.get());
-    if (const auto ls = m_shell.layer.lock(); ls && ls->m_mapped && ls->wlSurface() && ls->wlSurface()->resource()) {
+    if (const auto ls = m_shell.layer.lock(); ls && ls->mapped() && ls->wlSurface() && ls->wlSurface()->resource()) {
         // (drawn over the view: presented, not discarded under it)
         ls->wlSurface()->resource()->breadthfirst([this](SP<CWLSurfaceResource> s, const Vector2D&, void*) { m_drawnSurfaces.insert(s.get()); }, nullptr);
-        if (ls->m_popupHead)
-            ls->m_popupHead->breadthfirst(
+        if (ls->popupHead())
+            ls->popupHead()->breadthfirst(
                 [this](SP<Desktop::View::CPopup> p, void*) {
                     if (p && p->wlSurface() && p->wlSurface()->resource())
                         m_drawnSurfaces.insert(p->wlSurface()->resource().get());
@@ -3915,7 +3926,7 @@ void CDesktop3D::updatePlacements(float dt, const PHLMONITOR& mon) {
         if (p.kind != PANEL_WINDOW || m_placements.contains(p.key))
             continue;
         const auto w      = p.window.lock();
-        const auto parent = w && w->m_isMapped ? parentOf(w) : nullptr;
+        const auto parent = w && w->mapped() ? parentOf(w) : nullptr;
         const auto pp     = parent ? m_placements.find(reinterpret_cast<uintptr_t>(parent.get())) : m_placements.end();
         if (pp == m_placements.end() || pp->second.returning || pp->second.pinned)
             continue;
@@ -4065,8 +4076,8 @@ void CDesktop3D::updatePlacements(float dt, const PHLMONITOR& mon) {
 
     // back to Hyprland's rules: suspended when its workspace isn't shown
     auto release = [](const SPlacement& pl) {
-        if (const auto w = pl.window.lock(); w && w->m_isMapped)
-            w->setSuspended(w->isHidden() || !w->m_workspace || !w->m_workspace->isVisible());
+        if (const auto w = pl.window.lock(); w && w->mapped())
+            w->setSuspended(w->isHidden() || !w->m_workspace || !w->m_workspace->visible());
     };
 
     const float k = 1.f - std::exp(-dt * 18.f);
@@ -4624,7 +4635,7 @@ std::string CDesktop3D::setPlay(bool on, std::optional<bool> fill) {
             const V3   mid  = i >= 0 ? m_panels[i].pose.at(m_panels[i].box.size() * 0.5) : V3{};
             if (i >= 0 && !m_play.fill && !inOwnView(mid))
                 turnTo(mid);
-            const auto name = !w ? std::string() : w->m_title.empty() ? w->m_class : w->m_title;
+            const auto name = !w ? std::string() : w->metadata().title().empty() ? classOf(w) : w->metadata().title();
             notify(m_play.fill ? std::format("playing {}, filling the view", name) : std::format("playing {} here", name));
         }
         return "playing";
@@ -4661,7 +4672,7 @@ std::string CDesktop3D::setPlay(bool on, std::optional<bool> fill) {
     m_play.wallTold   = false;
     m_shortcutHold.on = false; // (a window chosen)
     // the game, to resume after play ends by itself
-    m_held = {.window = w, .pid = w->getPID(), .cls = classOf(w), .title = w->m_title};
+    m_held = {.window = w, .pid = w->backend().pid(), .cls = classOf(w), .title = w->metadata().title()};
     // all keys go to it, and the keyboard focus: SDL reads controllers, and pointer locks work, only with it
     m_typing = true;
     m_keys.fill(false);
@@ -4671,10 +4682,10 @@ std::string CDesktop3D::setPlay(bool on, std::optional<bool> fill) {
     // played here out of view (Windows page Play, going fullscreen): turn to face it
     if (const V3 at = p.pose.at(m_aimPanelLocal); !m_play.fill && !inOwnView(at)) {
         turnTo(at);
-        logf("turned to face {} (it wasn't in the view)", w->m_class);
+        logf("turned to face {} (it wasn't in the view)", classOf(w));
     }
     // tell the other view's key, and Super+wheel sizing when placed
-    const auto  name   = w->m_title.empty() ? w->m_class : w->m_title;
+    const auto  name   = w->metadata().title().empty() ? classOf(w) : w->metadata().title();
     const char* other  = m_play.fill == configuredPlayFill() ? "Shift+P" : "P";
     const auto  placed = m_placements.find(reinterpret_cast<uintptr_t>(w.get()));
     const bool  sized  = placed != m_placements.end() && !placed->second.pinned && !placed->second.returning && !placed->second.follows;
@@ -4749,8 +4760,8 @@ void CDesktop3D::endPlay() {
 void CDesktop3D::playEnded(const char* why) {
     if (!m_play.on)
         return;
-    if (const auto w = m_play.window.lock(); w && !w->m_title.empty())
-        m_held.title = w->m_title;
+    if (const auto w = m_play.window.lock(); w && !w->metadata().title().empty())
+        m_held.title = w->metadata().title();
     endPlay();
     m_typing = false;
     m_keys.fill(false);
@@ -4768,7 +4779,7 @@ void CDesktop3D::declineFullscreen(const PHLWINDOW& played) {
     if (!played)
         return;
     for (const auto& w : hypr::windows()) {
-        if (!w || !w->m_isMapped || !hypr::fullscreen(w) || listed(m_fullscreen.declined, w))
+        if (!w || !w->mapped() || !hypr::fullscreen(w) || listed(m_fullscreen.declined, w))
             continue;
         auto o = w;
         for (int hops = 0; o && o != played && hops < 8; ++hops)
@@ -4790,7 +4801,7 @@ bool CDesktop3D::playedWith(const SPanel& q, const PHLWINDOW& w) const {
 // w has the keyboard, or its dialog or X11 menu does
 bool CDesktop3D::keyboardWith(const PHLWINDOW& w) const {
     auto focus = Desktop::focusState()->window();
-    if (focus && focus->isX11OverrideRedirect())
+    if (focus && focus->backend().traits().overrideRedirect)
         focus = x11Owner(focus);
     for (int hops = 0; focus && focus != w && hops < 8; ++hops)
         focus = parentOf(focus);
@@ -4802,7 +4813,7 @@ void CDesktop3D::updateTyping(float dt) {
     const auto w = m_typingInto.lock();
     m_typingUnfocused = Desktop::focusState()->window() ? 0.f : m_typingUnfocused + dt;
     const char* why   = !w || windowPanel(w) < 0 ? "the window left the 3D view" :
-          keyboardWith(w)                        ? (!g_pInputManager->m_exclusiveLSes.empty() ? "a layer surface took the keyboard" : nullptr) :
+          keyboardWith(w)                        ? (!g_pInputManager->m_exclusiveKeyboardLSes.empty() ? "a layer surface took the keyboard" : nullptr) :
           m_typingUnfocused == 0                 ? "another window has the keyboard" :
           m_typingUnfocused >= 0.5f              ? "no window has had the keyboard for half a second" :
                                                    nullptr;
@@ -4822,7 +4833,7 @@ void CDesktop3D::updatePlay(float dt) {
         const bool  ours = keyboardWith(w);
         m_play.unfocused = Desktop::focusState()->window() ? 0.f : m_play.unfocused + dt;
         const char* why  = i < 0 ? "the window left the 3D view" :
-              ours                      ? (!g_pInputManager->m_exclusiveLSes.empty() ? "a layer surface took the keyboard" : nullptr) :
+              ours                      ? (!g_pInputManager->m_exclusiveKeyboardLSes.empty() ? "a layer surface took the keyboard" : nullptr) :
               m_play.unfocused == 0     ? "another window has the keyboard" :
               m_play.unfocused >= 0.5f  ? "no window has had the keyboard for half a second" :
                                           nullptr;
@@ -4882,7 +4893,7 @@ void CDesktop3D::sizePlayed(int notches) {
     if (!w || notches == 0)
         return;
     const uintptr_t   key  = reinterpret_cast<uintptr_t>(w.get());
-    const std::string name = clipped(w->m_title.empty() ? w->m_class : w->m_title, 40);
+    const std::string name = clipped(w->metadata().title().empty() ? classOf(w) : w->metadata().title(), 40);
     std::string       told;
     if (m_tiling.on && std::ranges::contains(m_tiling.order, key) && !atRing()) {
         if (!std::exchange(m_play.wallTold, true))
@@ -5025,7 +5036,7 @@ std::string CDesktop3D::playStatus() const {
     const bool locked = g_pInputManager->isLocked();
     // pointer to 0.01, so one clamped 0.01 inside the edge doesn't read as outside
     return std::format(R"({{"class": "{}", "title": "{}", "pointer": [{:.2f}, {:.2f}], "locked": {}, "confined": {}, "view": {:.2f}, "fill": {}, "size": {:.4f}}})",
-                       jsonEscape(w->m_class), jsonEscape(w->m_title), m_play.pointer.x, m_play.pointer.y, locked, !locked && g_pInputManager->isConstrained(), m_play.t,
+                       jsonEscape(classOf(w)), jsonEscape(w->metadata().title()), m_play.pointer.x, m_play.pointer.y, locked, !locked && g_pInputManager->isConstrained(), m_play.t,
                        m_play.fill, m_play.size);
 }
 
@@ -5062,12 +5073,12 @@ PHLLS CDesktop3D::keyboardLayer() const {
     for (const auto& layer : mon->m_layerSurfaceLayers)
         for (const auto& ref : layer) {
             const auto ls = ref.lock();
-            if (!ls || !ls->m_mapped || !ls->wlSurface() || !ls->wlSurface()->resource())
+            if (!ls || !ls->mapped() || !ls->wlSurface() || !ls->wlSurface()->resource())
                 continue;
             bool has = false;
             ls->wlSurface()->resource()->breadthfirst([&](SP<CWLSurfaceResource> s, const Vector2D&, void*) { has = has || s == focus; }, nullptr);
-            if (!has && ls->m_popupHead)
-                ls->m_popupHead->breadthfirst(
+            if (!has && ls->popupHead())
+                ls->popupHead()->breadthfirst(
                     [&](SP<Desktop::View::CPopup> p, void*) { has = has || (p && p->wlSurface() && p->wlSurface()->resource() == focus); }, nullptr);
             if (has)
                 return ls;
@@ -5108,7 +5119,7 @@ void CDesktop3D::updateShell(float dt) {
     } else if (m_shell.layer) {
         const auto ls = m_shell.layer.lock();
         m_shell.closing += dt;
-        if (!ls || !ls->m_mapped || m_shell.closing > 0.5f || m_mode != MODE_ACTIVE || m_away)
+        if (!ls || !ls->mapped() || m_shell.closing > 0.5f || m_mode != MODE_ACTIVE || m_away)
             m_shell.layer.reset();
     }
 
@@ -5117,8 +5128,8 @@ void CDesktop3D::updateShell(float dt) {
     if (!ls)
         return;
     std::unordered_set<uintptr_t> keys{reinterpret_cast<uintptr_t>(ls.get())};
-    if (ls->m_popupHead)
-        ls->m_popupHead->breadthfirst([&](SP<Desktop::View::CPopup> p, void*) { keys.insert(reinterpret_cast<uintptr_t>(p.get())); }, nullptr);
+    if (ls->popupHead())
+        ls->popupHead()->breadthfirst([&](SP<Desktop::View::CPopup> p, void*) { keys.insert(reinterpret_cast<uintptr_t>(p.get())); }, nullptr);
     std::erase_if(m_panels, [&](const SPanel& p) { return (p.kind == PANEL_LAYER || p.kind == PANEL_POPUP) && keys.contains(p.key); });
 }
 
@@ -5136,8 +5147,8 @@ void CDesktop3D::shellPointer(uint32_t timeMs) {
         local = global - m_shell.grabAt;
     } else {
         m_shell.grab.reset();
-        if (ls->m_popupHead)
-            if (const auto popup = ls->m_popupHead->at(global, true); popup && popup->wlSurface() && popup->wlSurface()->resource()) {
+        if (ls->popupHead())
+            if (const auto popup = ls->popupHead()->at(global, true); popup && popup->wlSurface() && popup->wlSurface()->resource()) {
                 surf  = popup->wlSurface()->resource();
                 local = global - popup->coordsGlobal();
             }
@@ -5174,13 +5185,13 @@ void CDesktop3D::shellMotion(const IPointer::SMotionEvent& e) {
 }
 
 // the layer drawn as Hyprland draws it on the 2D desktop, then its popups
-void CDesktop3D::drawShell(const PHLMONITOR& mon) {
+void CDesktop3D::drawShell(Render::CRenderContext& ctx, const PHLMONITOR& mon) {
     const auto ls = m_shell.layer.lock();
-    if (!ls || !ls->m_mapped || !ls->wlSurface() || !ls->wlSurface()->resource())
+    if (!ls || !ls->mapped() || !ls->wlSurface() || !ls->wlSurface()->resource())
         return;
     static auto PBLUR      = CConfigValue<Config::INTEGER>("decoration:blur:enabled");
     static auto PDIMAROUND = CConfigValue<Config::FLOAT>("decoration:dim_around");
-    auto&       pass       = g_pHyprRenderer->m_renderPass;
+    auto&       pass       = ctx.m_pass;
     if (*PDIMAROUND && ls->m_ruleApplicator->dimAround().valueOrDefault()) {
         CRectPassElement::SRectData dim;
         dim.box   = {0, 0, mon->m_transformedSize.x, mon->m_transformedSize.y};
@@ -5221,10 +5232,10 @@ void CDesktop3D::drawShell(const PHLMONITOR& mon) {
     data.discardMode &= ~DISCARD_ALPHA;
     data.discardOpacity = 0.F;
     data.surfaceCounter = 0;
-    if (ls->m_popupHead)
-        ls->m_popupHead->breadthfirst(
+    if (ls->popupHead())
+        ls->popupHead()->breadthfirst(
             [&](SP<Desktop::View::CPopup> popup, void*) {
-                if (!popup || !popup->aliveAndVisible() || !popup->wlSurface())
+                if (!popup || !popup->mapped() || !popup->wlSurface())
                     return;
                 const auto s = popup->wlSurface()->resource();
                 if (!s || !s->m_current.texture || s->m_current.size.x < 1 || s->m_current.size.y < 1)
@@ -5322,10 +5333,10 @@ void CDesktop3D::onKey(const IKeyboard::SKeyEvent& e, Event::SCallbackInfo& info
         return;
     }
 
-    const uint32_t mods = g_pInputManager->getModsFromAllKBs();
-    const bool     meta = mods & HL_MODIFIER_META;
+    const Input::ModifierMask mods = g_pInputManager->getModsFromAllKBs();
+    const bool     meta = bool(mods & Input::HL_MODIFIER_META);
     // shortcuts act on the focused window: noted for the shortcut hold (onWindowClose)
-    const bool shortcut = !modifierKey(k) && (meta || ((mods & HL_MODIFIER_CTRL) && (mods & HL_MODIFIER_ALT)) || ((mods & HL_MODIFIER_ALT) && k == K_F4));
+    const bool shortcut = !modifierKey(k) && (meta || ((mods & Input::HL_MODIFIER_CTRL) && (mods & Input::HL_MODIFIER_ALT)) || ((mods & Input::HL_MODIFIER_ALT) && k == K_F4));
     const auto sentTo   = [this] {
         m_shortcutFor = Desktop::focusState()->window();
         m_shortcutAt  = std::chrono::steady_clock::now();
@@ -5373,7 +5384,7 @@ void CDesktop3D::onKey(const IKeyboard::SKeyEvent& e, Event::SCallbackInfo& info
         if (k == K_TAB || (!m_menu.onlineModal() && k == binding("action_menu")))
             m_menu.hide();
         else if (m_menu.onlineModal())
-            m_menu.onlineKey(k, mods & HL_MODIFIER_SHIFT, mods & HL_MODIFIER_CTRL, mods & HL_MODIFIER_ALT, meta);
+            m_menu.onlineKey(k, bool(mods & Input::HL_MODIFIER_SHIFT), bool(mods & Input::HL_MODIFIER_CTRL), bool(mods & Input::HL_MODIFIER_ALT), meta);
         else
             (void)menuKey(m_menu, k, [this](const std::optional<SMenuItem>& it) { menuPick(it); });
         requestFrame();
@@ -5385,7 +5396,7 @@ void CDesktop3D::onKey(const IKeyboard::SKeyEvent& e, Event::SCallbackInfo& info
     // menus/typing/online handling so it never steals a key from an interactive surface. Video hands
     // never enter this branch.
     if (m_mode == MODE_ACTIVE && m_aimed < 0 && !m_play.on && !m_menu.open() && !m_shell.input && viewmodelUsesModel() && settingBool("model_enabled") &&
-        m_viewmodelModel.active() && k == K_R && !(mods & (HL_MODIFIER_SHIFT | HL_MODIFIER_CTRL | HL_MODIFIER_ALT | HL_MODIFIER_META))) {
+        m_viewmodelModel.active() && k == K_R && !(mods & (Input::HL_MODIFIER_SHIFT | Input::HL_MODIFIER_CTRL | Input::HL_MODIFIER_ALT | Input::HL_MODIFIER_META))) {
         info.cancelled = true;
         m_consumed.insert(k);
         m_viewmodelModel.triggerReload();
@@ -5428,7 +5439,7 @@ void CDesktop3D::onKey(const IKeyboard::SKeyEvent& e, Event::SCallbackInfo& info
     // keep compositor shortcuts working, for what the crosshair is on (focusForShortcut)
     if (k == K_LMETA || k == K_RMETA || k == K_LALT || k == K_RALT)
         return;
-    if (meta || ((mods & HL_MODIFIER_CTRL) && (mods & HL_MODIFIER_ALT))) {
+    if (meta || ((mods & Input::HL_MODIFIER_CTRL) && (mods & Input::HL_MODIFIER_ALT))) {
         if (m_mode == MODE_ACTIVE && k != K_LCTRL && k != K_RCTRL && k != K_LSHIFT && k != K_RSHIFT) {
             focusForShortcut();
             sentTo();
@@ -5455,7 +5466,7 @@ void CDesktop3D::onKey(const IKeyboard::SKeyEvent& e, Event::SCallbackInfo& info
         }
         m_held.at = std::chrono::steady_clock::now();
         if (k == binding("play"))
-            if (const std::string r = playHeldGame(configuredPlayFill() != bool(mods & HL_MODIFIER_SHIFT)); r.starts_with("error: "))
+            if (const std::string r = playHeldGame(configuredPlayFill() != bool(mods & Input::HL_MODIFIER_SHIFT)); r.starts_with("error: "))
                 notify(r.substr(7), true);
         return;
     }
@@ -5508,12 +5519,12 @@ void CDesktop3D::onKey(const IKeyboard::SKeyEvent& e, Event::SCallbackInfo& info
         return;
     }
     const bool hRebound = std::any_of(m_bindings.begin(), m_bindings.end(), [k](const auto& entry) { return entry.second == k; });
-    if (k == binding("carry") || (k == K_H && !hRebound && !(mods & HL_MODIFIER_SHIFT))) { // preserve the legacy H alias unless assigned
+    if (k == binding("carry") || (k == K_H && !hRebound && !(mods & Input::HL_MODIFIER_SHIFT))) { // preserve the legacy H alias unless assigned
         if (const std::string r = carry(); r.starts_with("error: "))
             notify(r.substr(7), true);
         return;
     }
-    if (k == K_H && (mods & HL_MODIFIER_SHIFT) && !hRebound) { // legacy quick pin/unpin shortcut unless H is reassigned
+    if (k == K_H && (mods & Input::HL_MODIFIER_SHIFT) && !hRebound) { // legacy quick pin/unpin shortcut unless H is reassigned
         if (const std::string r = togglePin(); r.starts_with("error: "))
             notify(r.substr(7), true);
         return;
@@ -5543,12 +5554,12 @@ void CDesktop3D::onKey(const IKeyboard::SKeyEvent& e, Event::SCallbackInfo& info
         return;
     }
     if (k == binding("play")) { // hold Shift for the alternate view mode
-        if (const std::string r = setPlay(true, configuredPlayFill() != bool(mods & HL_MODIFIER_SHIFT)); r.starts_with("error: "))
+        if (const std::string r = setPlay(true, configuredPlayFill() != bool(mods & Input::HL_MODIFIER_SHIFT)); r.starts_with("error: "))
             notify(r.substr(7), true);
         return;
     }
     if (k == binding("tiling")) {
-        if (const std::string r = (mods & HL_MODIFIER_SHIFT) ? tileHere() : setTiling(!m_tiling.on); r.starts_with("error: "))
+        if (const std::string r = (mods & Input::HL_MODIFIER_SHIFT) ? tileHere() : setTiling(!m_tiling.on); r.starts_with("error: "))
             notify(r.substr(7), true);
         return;
     }
@@ -5715,7 +5726,7 @@ void CDesktop3D::onAxis(const IPointer::SAxisEvent& e, Event::SCallbackInfo& inf
     }
 
     // Super+wheel resizes the window played here, in whole notches
-    if (m_mode == MODE_ACTIVE && m_play.on && !shell && (g_pInputManager->getModsFromAllKBs() & HL_MODIFIER_META)) {
+    if (m_mode == MODE_ACTIVE && m_play.on && !shell && (g_pInputManager->getModsFromAllKBs() & Input::HL_MODIFIER_META)) {
         if (e.axis == WL_POINTER_AXIS_VERTICAL_SCROLL && !m_play.fill) {
             const float notches = e.deltaDiscrete != 0 ? e.deltaDiscrete / 120.f : (float)e.delta / 15.f;
             if (std::signbit(notches) != std::signbit(m_play.wheel))
@@ -5742,10 +5753,10 @@ void CDesktop3D::onAxis(const IPointer::SAxisEvent& e, Event::SCallbackInfo& inf
     // carrying: the wheel scales (up: bigger), Ctrl+wheel moves it away (up) or closer
     if (m_mode == MODE_ACTIVE && m_hold.key && !shell && e.axis == WL_POINTER_AXIS_VERTICAL_SCROLL) {
         const float    notches = e.deltaDiscrete != 0 ? e.deltaDiscrete / 120.f : (float)e.delta / 15.f;
-        const uint32_t mods    = g_pInputManager->getModsFromAllKBs();
-        if (mods & HL_MODIFIER_CTRL)
+        const Input::ModifierMask mods = g_pInputManager->getModsFromAllKBs();
+        if (mods & Input::HL_MODIFIER_CTRL)
             m_hold.dist = std::clamp(m_hold.dist * std::pow(0.9f, notches), CARRY_NEAREST, 12.f);
-        else if (mods & HL_MODIFIER_SHIFT) { // resizes the app itself (text keeps its size)
+        else if (mods & Input::HL_MODIFIER_SHIFT) { // resizes the app itself (text keeps its size)
             if (const auto it = m_placements.find(m_hold.key); it != m_placements.end())
                 if (const auto w = it->second.window.lock())
                     resizeReal(w, hypr::realSize(w)->goal() * std::pow((double)WHEEL_SIZE, notches));
@@ -5837,7 +5848,10 @@ namespace {
     }
 
     std::string classOf(const PHLWINDOW& w) {
-        return w->m_class.empty() ? w->m_initialClass : w->m_class;
+        if (!w)
+            return {};
+        const auto& appID = w->metadata().appID();
+        return appID.empty() ? w->metadata().initialAppID() : appID;
     }
 
     // touch-typing hand for an evdev key on QWERTY: 0 left, 1 right
@@ -5849,24 +5863,20 @@ namespace {
         return 1;
     }
 
-    // a dialog's parent; for X11 walks WM_TRANSIENT_FOR itself (Hyprland 0.55.2's x11TransientFor() overshoots)
+    // a dialog's parent; 0.57 backend.parent() resolves the window, then skip override-redirect menu chains
     PHLWINDOW parentOf(const PHLWINDOW& w) {
-        if (!w->m_isX11)
-            return w->parent();
-        const auto xs = w->m_xwaylandSurface.lock();
-        auto       up = xs ? xs->m_parent.lock() : nullptr;
-        for (int hops = 0; up && up->m_parent && hops < 16; ++hops)
-            up = up->m_parent.lock();
-        if (up)
-            for (const auto& o : hypr::windows())
-                if (o && o != w && o->m_isMapped && o->m_xwaylandSurface.lock() == up)
-                    return o;
-        return nullptr;
+        if (!w)
+            return nullptr;
+        auto parent = w->backend().parent();
+        // X11 override-redirect menus can form a chain. Walk it to the first real toplevel.
+        for (int hops = 0; parent && parent->backend().traits().overrideRedirect && hops < 16; ++hops)
+            parent = parent->backend().parent();
+        return parent;
     }
 
     // a window of its own (not a dialog, a menu or a tooltip)
     bool toplevel(const PHLWINDOW& w) {
-        return w && w->m_isMapped && !w->isHidden() && !w->isX11OverrideRedirect() && !parentOf(w);
+        return w && w->mapped() && !w->isHidden() && !w->backend().traits().overrideRedirect && !parentOf(w);
     }
 
     // pid and ancestors from /proc/PID/stat (readable where environ isn't, e.g. Chromium)
@@ -5917,7 +5927,7 @@ void CDesktop3D::focusForShortcut() {
         why = "a window with the keyboard closed: not turned or moved since";
         // a game window given the keyboard as its popup closed gets it back after the hold (m_giveBack)
         auto f = Desktop::focusState()->window();
-        if (f && f->isX11OverrideRedirect())
+        if (f && f->backend().traits().overrideRedirect)
             f = x11Owner(f);
         if (const auto top = topParent(f); top && ((m_held.on && sameGame(top) && !listed(m_held.others, top)) || fullscreenHere(top)))
             m_giveBack = f;
@@ -5929,22 +5939,22 @@ void CDesktop3D::focusForShortcut() {
     } else if (m_aimed >= 0 && m_aimed < (int)m_panels.size() && m_panels[m_aimed].kind != PANEL_LAYER)
         w = m_panels[m_aimed].window.lock();
     // an X11 menu or tooltip: its owner, else none (closing a menu can kill its whole app)
-    if (w && w->m_isX11 && (w->isX11OverrideRedirect() || w->m_X11ShouldntFocus)) {
+    if (w && w->backend().isX11() && (w->backend().traits().overrideRedirect || w->shouldntFocus())) {
         const auto menu = w;
-        for (int hops = 0; w && (w->isX11OverrideRedirect() || w->m_X11ShouldntFocus) && hops < 8; ++hops)
+        for (int hops = 0; w && (w->backend().traits().overrideRedirect || w->shouldntFocus()) && hops < 8; ++hops)
             w = x11Owner(w);
-        if (w && (w->isX11OverrideRedirect() || w->m_X11ShouldntFocus))
+        if (w && (w->backend().traits().overrideRedirect || w->shouldntFocus()))
             w = nullptr;
         if (!w)
             why = std::format("{} is an X11 menu of no window's", classOf(menu));
     }
-    if (w && (!w->m_workspace || !w->m_workspace->isVisible())) {
+    if (w && (!w->m_workspace || !w->m_workspace->visible())) {
         why = std::format("{} is on a workspace not shown", classOf(w));
         w   = nullptr;
     }
     // hidden under an open special workspace though "visible" (unless pinned or with input:special_fallthrough)
     if (const auto mon = w ? w->m_monitor.lock() : nullptr;
-        w && !w->m_pinned && !*PFALLTHROUGH && mon && mon->m_activeSpecialWorkspace && mon->m_activeSpecialWorkspace != w->m_workspace) {
+        w && !(w->m_state & Desktop::View::WINDOW_STATE_PINNED) && !*PFALLTHROUGH && mon && mon->m_activeSpecialWorkspace && mon->m_activeSpecialWorkspace != w->m_workspace) {
         why = std::format("{} is under a special workspace", classOf(w));
         w   = nullptr;
     }
@@ -5974,7 +5984,7 @@ void CDesktop3D::focusForShortcut() {
 
 // a focused window closed by a shortcut starts the shortcut hold; the played window closing ends play mode
 void CDesktop3D::onWindowClose(const PHLWINDOW& w) {
-    if (m_mode == MODE_OFF || !w || w->isX11OverrideRedirect())
+    if (m_mode == MODE_OFF || !w || w->backend().traits().overrideRedirect)
         return;
     const auto  pl     = m_placements.find(reinterpret_cast<uintptr_t>(w.get()));
     const bool  placed = pl != m_placements.end() && !pl->second.returning;
@@ -5985,7 +5995,7 @@ void CDesktop3D::onWindowClose(const PHLWINDOW& w) {
     const bool  aimed  = m_aimed >= 0 && m_aimed < (int)m_panels.size() && m_panels[m_aimed].window.lock() == w;
     const bool  played = m_play.on && m_play.window.lock() == w;
     const bool  under  = hypr::blockedBelowFullscreen(w);
-    logf("closed: {} ({}), {}{}{}{}{}", classOf(w), clipped(w->m_title, 40), where, under ? ", under a fullscreen window" : "", had ? ", it had the keyboard" : "",
+    logf("closed: {} ({}), {}{}{}{}{}", classOf(w), clipped(w->metadata().title(), 40), where, under ? ", under a fullscreen window" : "", had ? ", it had the keyboard" : "",
          aimed ? ", the crosshair on it" : "", played ? ", played" : "");
     if (had && m_mode == MODE_ACTIVE && !m_away) {
         if (const auto now = std::chrono::steady_clock::now(); w == m_shortcutFor.lock() && now - m_shortcutAt < std::chrono::duration<float>(SHORTCUT_CLOSE_TIME))
@@ -5997,7 +6007,7 @@ void CDesktop3D::onWindowClose(const PHLWINDOW& w) {
         if ((played || m_held.on) && sameGame(w)) {
             m_held.others.clear();
             for (const auto& o : hypr::windows())
-                if (o && o != w && o->m_isMapped && sameGame(o))
+                if (o && o != w && o->mapped() && sameGame(o))
                     m_held.others.emplace_back(o);
         }
     }
@@ -6009,7 +6019,7 @@ void CDesktop3D::onWindowClose(const PHLWINDOW& w) {
 bool CDesktop3D::sameGame(const PHLWINDOW& w) const {
     if (!w)
         return false;
-    if (m_held.pid > 0 && w->getPID() == m_held.pid)
+    if (m_held.pid > 0 && w->backend().pid() == m_held.pid)
         return true;
     return !m_held.cls.empty() && classOf(w) == m_held.cls;
 }
@@ -6061,10 +6071,10 @@ void CDesktop3D::updateHolds() {
          length(m_body.feet - h.feet) > SHORTCUT_HOLD_MOVE || now - h.at > std::chrono::duration<float>(SHORTCUT_HOLD_TIME)))
         h.on = false;
     // return the keyboard to the game window a shortcut took it from, once the hold ends
-    if (const auto g = m_giveBack.lock(); !g || m_mode != MODE_ACTIVE || m_away || Desktop::focusState()->window() || !g->m_isMapped ||
+    if (const auto g = m_giveBack.lock(); !g || m_mode != MODE_ACTIVE || m_away || Desktop::focusState()->window() || !g->mapped() ||
         !((m_held.on && sameGame(topParent(g))) || fullscreenHere(topParent(g))))
         m_giveBack.reset();
-    else if (!m_shortcutHold.on && !m_shell.input && g_pInputManager->m_exclusiveLSes.empty() && g_pSeatManager->m_state.keyboardFocus.expired()) {
+    else if (!m_shortcutHold.on && !m_shell.input && g_pInputManager->m_exclusiveKeyboardLSes.empty() && g_pSeatManager->m_state.keyboardFocus.expired()) {
         m_giveBack.reset();
         if (windowPanel(g) >= 0 && focusable(g)) {
             Desktop::focusState()->fullWindowFocus(g, Desktop::FOCUS_REASON_CLICK);
@@ -6087,16 +6097,16 @@ void CDesktop3D::updateHolds() {
             continue; // opened before leaving 3D
         // the first window opened, else a drawn one of its class
         PHLWINDOW w = h.window.lock();
-        if (!w || !w->m_isMapped || windowPanel(w) < 0) {
+        if (!w || !w->mapped() || windowPanel(w) < 0) {
             w = nullptr;
             for (const auto& p : m_panels)
-                if (const auto o = p.kind == PANEL_WINDOW ? p.window.lock() : nullptr; o && toplevel(o) && classOf(o) == h.cls && (!w || w->m_title.empty()))
+                if (const auto o = p.kind == PANEL_WINDOW ? p.window.lock() : nullptr; o && toplevel(o) && classOf(o) == h.cls && (!w || w->metadata().title().empty()))
                     w = o;
         }
         if (!w)
             continue;
         m_playHinted[h.cls] = now;
-        notify(std::format("{}: P plays it (Super+Esc gives the keys back)", clipped(w->m_title.empty() ? h.cls : w->m_title, 40)));
+        notify(std::format("{}: P plays it (Super+Esc gives the keys back)", clipped(w->metadata().title().empty() ? h.cls : w->metadata().title(), 40)));
     }
 
     if (!m_held.on)
@@ -6106,12 +6116,12 @@ void CDesktop3D::updateHolds() {
         return;
     }
     // not under a layer surface (it would end play again); idle time starts once it lets go
-    if (m_shell.input || !g_pInputManager->m_exclusiveLSes.empty()) {
+    if (m_shell.input || !g_pInputManager->m_exclusiveKeyboardLSes.empty()) {
         m_held.at = now;
         return;
     }
     auto f = Desktop::focusState()->window();
-    if (f && f->isX11OverrideRedirect())
+    if (f && f->backend().traits().overrideRedirect)
         f = x11Owner(f);
     f = topParent(f);
     // a window focused as another game window closed counts only once focus was elsewhere
@@ -6294,7 +6304,7 @@ std::string CDesktop3D::launch(const std::string& what) {
 
 // places a new window at its class's spot if in sight, else in front of you (launched from 3D, or on the 3D monitor)
 void CDesktop3D::onWindowOpen(const PHLWINDOW& w) {
-    if (!w || w->isX11OverrideRedirect())
+    if (!w || w->backend().traits().overrideRedirect)
         return;
     // a window closed outside 3D can leave state for a new one at its address
     std::erase_if(m_placements, [](const auto& kv) { return kv.second.window.expired(); });
@@ -6313,7 +6323,7 @@ void CDesktop3D::onWindowOpen(const PHLWINDOW& w) {
     const auto        env      = w->getEnv();
     const auto        token    = env.find("HYPRWALK_LAUNCH");
     const auto        steamId  = env.contains("SteamAppId") ? env.at("SteamAppId") : env.contains("SteamGameId") ? env.at("SteamGameId") : "";
-    const auto        parents  = m_launches.empty() ? std::vector<int64_t>{} : ancestry(w->getPID());
+    const auto        parents  = m_launches.empty() ? std::vector<int64_t>{} : ancestry(w->backend().pid());
     // a Steam game's first window: hint how to play it (updateHolds)
     if ((!steamId.empty() || lowered(cls).starts_with("steam_app_")) && m_mode == MODE_ACTIVE && toplevel(w) &&
         std::ranges::none_of(m_playHints, [&](const SPlayHint& h) { return h.cls == cls; }))
@@ -6337,7 +6347,7 @@ void CDesktop3D::onWindowOpen(const PHLWINDOW& w) {
     if ((m_mode != MODE_ACTIVE && m_mode != MODE_ENTERING) || m_placements.contains(reinterpret_cast<uintptr_t>(w.get())))
         return;
     // a dialog of a window in the world: just in front of its parent
-    if (const auto parent = parentOf(w); parent && w->m_isMapped) {
+    if (const auto parent = parentOf(w); parent && w->mapped()) {
         const auto pp = m_placements.find(reinterpret_cast<uintptr_t>(parent.get()));
         if (pp == m_placements.end() || pp->second.returning)
             return;
@@ -6360,7 +6370,7 @@ void CDesktop3D::onWindowOpen(const PHLWINDOW& w) {
         return;
     // tiling mode: windows that would open in front of you join the row where you look
     const bool intoRow = m_tiling.on && m_mode == MODE_ACTIVE && tileable(w) &&
-        (launched || (w->m_monitor.lock() == m_monitor.lock() && w->m_workspace && w->m_workspace->isVisible()));
+        (launched || (w->m_monitor.lock() == m_monitor.lock() && w->m_workspace && w->m_workspace->visible()));
     if (intoRow && atRing()) {
         tileWindow(w, lookSlot());
         m_tiling.stay.insert(reinterpret_cast<uintptr_t>(w.get()));
@@ -6386,9 +6396,9 @@ void CDesktop3D::onWindowOpen(const PHLWINDOW& w) {
         logf("{}: not to its place (out of sight)", cls);
     if (launched)
         placeInFront(w, appRule(m_rules, cls));
-    else if (m_mode == MODE_ACTIVE && w->m_monitor.lock() == m_monitor.lock() && w->m_workspace && w->m_workspace->isVisible() && hypr::realSize(w)->goal().y >= 1) {
+    else if (m_mode == MODE_ACTIVE && w->m_monitor.lock() == m_monitor.lock() && w->m_workspace && w->m_workspace->visible() && hypr::realSize(w)->goal().y >= 1) {
         // other windows on the 3D monitor: in front of you; floating ones nearer at screen size
-        placeInFront(w, w->m_isFloating ? SAppRule{.distance = 1.3f} : appRule(m_rules, cls));
+        placeInFront(w, w->isFloating() ? SAppRule{.distance = 1.3f} : appRule(m_rules, cls));
     }
     // away from a staying ring, a window left on the wall stays rather than flying off to the row
     if (intoRow && !m_placements.contains(reinterpret_cast<uintptr_t>(w.get())))
@@ -6418,10 +6428,10 @@ bool CDesktop3D::fullscreenHere(const PHLWINDOW& w) const {
 // focusing w switches nothing: workspace shown and no special workspace over it
 bool CDesktop3D::focusable(const PHLWINDOW& w) const {
     static auto PFALLTHROUGH = CConfigValue<Config::INTEGER>("input:special_fallthrough");
-    if (!w || !w->m_isMapped || !w->m_workspace || !w->m_workspace->isVisible())
+    if (!w || !w->mapped() || !w->m_workspace || !w->m_workspace->visible())
         return false;
     const auto mon = w->m_monitor.lock();
-    return w->m_pinned || *PFALLTHROUGH || !mon || !mon->m_activeSpecialWorkspace || mon->m_activeSpecialWorkspace == w->m_workspace;
+    return (w->m_state & Desktop::View::WINDOW_STATE_PINNED) || *PFALLTHROUGH || !mon || !mon->m_activeSpecialWorkspace || mon->m_activeSpecialWorkspace == w->m_workspace;
 }
 
 // auto-plays the 3D monitor's fullscreen window once it (or its dialog) has the keyboard while you just walk; a fresh
@@ -6429,7 +6439,7 @@ bool CDesktop3D::focusable(const PHLWINDOW& w) const {
 void CDesktop3D::autoPlay() {
     const auto stale = [](const PHLWINDOWREF& r) {
         const auto w = r.lock();
-        return !w || !w->m_isMapped || !hypr::fullscreen(w);
+        return !w || !w->mapped() || !hypr::fullscreen(w);
     };
     std::erase_if(m_fullscreen.declined, stale);
     std::erase_if(m_fullscreen.fresh, stale);
@@ -6437,7 +6447,7 @@ void CDesktop3D::autoPlay() {
     const auto ws  = mon ? mon->m_activeWorkspace : nullptr;
     const auto w   = ws ? hypr::fullscreenWindow(ws) : nullptr;
     if (m_mode != MODE_ACTIVE || !w || !hypr::fullscreen(w) || m_play.on || m_away || m_shell.input || m_menu.open() || m_hold.key ||
-        (m_typing && m_typingInto.lock() != w) || !g_pInputManager->m_exclusiveLSes.empty() || windowPanel(w) < 0 || listed(m_fullscreen.declined, w))
+        (m_typing && m_typingInto.lock() != w) || !g_pInputManager->m_exclusiveKeyboardLSes.empty() || windowPanel(w) < 0 || listed(m_fullscreen.declined, w))
         return; // an exclusive layer surface would end it at once
     if (m_shortcutHold.on || (m_held.on && listed(m_held.others, w)))
         return;
@@ -6944,7 +6954,7 @@ void CDesktop3D::updateTiling(float dt) {
         if (pl.tiled && !pl.pinned && !pl.returning && key != m_hold.key && own)
             return false;
         pl.tiled = false;
-        if (w && w->m_isMapped && !own && !pl.pinned && key != m_hold.key)
+        if (w && w->mapped() && !own && !pl.pinned && key != m_hold.key)
             pl.returning = true; // hidden (a group's tab): home until shown
         m_tiling.laid.erase(key);
         return true;
@@ -7088,13 +7098,13 @@ PHLWINDOW CDesktop3D::findWindow(const std::string& what) const {
     const std::string lw = lowered(what);
     for (const bool byTitle : {false, true})
         for (const auto& w : hypr::windows())
-            if (toplevel(w) && lowered(byTitle ? w->m_title : classOf(w)) == lw)
+            if (toplevel(w) && lowered(byTitle ? w->metadata().title() : classOf(w)) == lw)
                 return w;
     return nullptr;
 }
 
 std::string CDesktop3D::windowAction(const PHLWINDOW& w, eWindowAction a) {
-    if (!w || !w->m_isMapped)
+    if (!w || !w->mapped())
         return "error: no such window";
     const uintptr_t key    = reinterpret_cast<uintptr_t>(w.get());
     const auto      placed = m_placements.find(key);
@@ -7268,7 +7278,7 @@ std::string CDesktop3D::resizeReal(const PHLWINDOW& w, const Vector2D& size) {
     if (hypr::fullscreenOrMaximized(w))
         return "error: it's fullscreen";
     const Vector2D want{std::round(std::clamp(size.x, 64.0, 8192.0)), std::round(std::clamp(size.y, 48.0, 8192.0))};
-    if (!w->m_isFloating)
+    if (!w->isFloating())
         (void)Config::Actions::floatWindow(Config::Actions::TOGGLE_ACTION_ENABLE, w); // resize says if it can't
     if (const auto r = Config::Actions::resize(want, false, w); !r)
         return "error: " + r.error().message;
@@ -7502,11 +7512,11 @@ SMenuPage CDesktop3D::ownPage(const std::string& id) {
             if (!toplevel(w))
                 continue;
             const auto        pl    = m_placements.find(reinterpret_cast<uintptr_t>(w.get()));
-            const std::string where = pl == m_placements.end() || pl->second.returning ? (w->m_workspace ? "wall · " + w->m_workspace->m_name : "wall")
+            const std::string where = pl == m_placements.end() || pl->second.returning ? (w->m_workspace ? "wall · " + w->m_workspace->displayName() : "wall")
                 : pl->second.pinned                                                   ? "pinned to the view"
                                                                                       : "in the world";
             const SAppEntry*  app   = appForClass(apps(), classOf(w));
-            std::string       label = w->m_title.empty() ? classOf(w) : w->m_title;
+            std::string       label = w->metadata().title().empty() ? classOf(w) : w->metadata().title();
             if (label.size() > 40)
                 label = label.substr(0, 38) + "…";
             p.items.push_back({.label = label, .hint = where, .icon = "🪟", .picture = app ? icon(app->icon) : nullptr,
@@ -7547,7 +7557,7 @@ SMenuPage CDesktop3D::ownPage(const std::string& id) {
         const auto        w    = findWindow(addr);
         if (!w)
             return {.title = "Gone"};
-        p.title = "Close " + clipped(w->m_title.empty() ? classOf(w) : w->m_title, 24) + "?";
+        p.title = "Close " + clipped(w->metadata().title().empty() ? classOf(w) : w->metadata().title(), 24) + "?";
         for (int slot = 1; slot <= CActionMenu::SLOTS; ++slot)
             p.items.push_back(slot == 5 ? SMenuItem{.label = "Close it", .icon = "❌", .action = MA_WINDOW, .arg = WA_CLOSE, .target = addr}
                                         : SMenuItem{.label = "Keep it", .icon = "↩️", .action = MA_MENU_BACK});
@@ -7561,7 +7571,7 @@ SMenuPage CDesktop3D::ownPage(const std::string& id) {
     const auto pl     = m_placements.find(reinterpret_cast<uintptr_t>(w.get()));
     const bool placed = pl != m_placements.end() && !pl->second.returning, pinned = placed && pl->second.pinned;
     const auto size   = hypr::realSize(w)->goal();
-    p.title           = w->m_title.empty() ? classOf(w) : w->m_title;
+    p.title           = w->metadata().title().empty() ? classOf(w) : w->metadata().title();
     if (p.title.size() > 30)
         p.title = p.title.substr(0, 28) + "…";
     p.items = {
@@ -7584,7 +7594,7 @@ std::string CDesktop3D::windowsStatus() const {
         // height in metres; apparent: size seen from the eye, 1 = as on the 2D desktop; follows: a dialog's window
         const V3 n = pl.rot.rotate({0, 0, 1});
         list += std::format(R"({}{{"class": "{}", "title": "{}", "address": "0x{:x}", "center": [{:.3f}, {:.3f}, {:.3f}], "normal": [{:.3f}, {:.3f}, {:.3f}], "distance": {:.3f}, "size": {:.3f}, "height": {:.3f}, "width": {:.3f}, "apparent": {:.3f}, "held": {}, "pinned": {}, "tiled": {}, "follows": "{}", "settled": {}, "returning": {}}})",
-                            list.empty() ? "" : ", ", jsonEscape(w ? w->m_class : ""), jsonEscape(w ? w->m_title : ""), key, pl.center.x, pl.center.y, pl.center.z, n.x, n.y, n.z,
+                            list.empty() ? "" : ", ", jsonEscape(w ? classOf(w) : ""), jsonEscape(w ? w->metadata().title() : ""), key, pl.center.x, pl.center.y, pl.center.z, n.x, n.y, n.z,
                             length(pl.center - m_camera.eye), pl.scale / m_screen.scale(), w ? hypr::realSize(w)->goal().y * pl.scale : 0.0,
                             w ? hypr::realSize(w)->goal().x * pl.scale : 0.0, apparentSize(pl.center, pl.scale), key == m_hold.key, pl.pinned != 0, pl.tiled,
                             pl.follows ? std::format("0x{:x}", pl.follows) : "", pl.settled, pl.returning);
@@ -8160,7 +8170,7 @@ std::string CDesktop3D::menuAction(const SMenuItem& it) {
             const auto w = findWindow(it.target);
             static constexpr const char* ACTIONS[] = {"focus", "bring here", "to the wall", "pin", "bigger", "smaller", "play", "close"};
             if (w)
-                logf("the Action Menu: {} {} ({})", a == WA_PIN && it.on ? "unpin" : a < std::size(ACTIONS) ? ACTIONS[a] : "?", classOf(w), clipped(w->m_title, 40));
+                logf("the Action Menu: {} {} ({})", a == WA_PIN && it.on ? "unpin" : a < std::size(ACTIONS) ? ACTIONS[a] : "?", classOf(w), clipped(w->metadata().title(), 40));
             const std::string r = windowAction(w, a);
             if (!r.starts_with("error: ") && (a == WA_FOCUS || a == WA_BRING || a == WA_PLAY || a == WA_CLOSE))
                 m_menu.hide();
@@ -8247,8 +8257,8 @@ std::string CDesktop3D::status() {
         const auto& p     = m_panels[m_aimed];
         const auto  w     = p.window.lock();
         const char* kinds[] = {"layer", "window", "popup"};
-        aimed = std::format(R"({{"kind": "{}", "title": "{}", "class": "{}", "local": [{:.1f}, {:.1f}], "surface": {}}})", kinds[p.kind], jsonEscape(w ? w->m_title : ""),
-                            jsonEscape(w ? w->m_class : ""), m_aimPanelLocal.x, m_aimPanelLocal.y, m_aimSurface.expired() ? "false" : "true");
+        aimed = std::format(R"({{"kind": "{}", "title": "{}", "class": "{}", "local": [{:.1f}, {:.1f}], "surface": {}}})", kinds[p.kind], jsonEscape(w ? w->metadata().title() : ""),
+                            jsonEscape(w ? classOf(w) : ""), m_aimPanelLocal.x, m_aimPanelLocal.y, m_aimSurface.expired() ? "false" : "true");
     }
     const char* modes[] = {"off", "entering", "active", "exiting"};
     std::string shell = "null";
@@ -8407,8 +8417,8 @@ void CDesktop3D::multiplayerWindowsUpdate(bool force) {
                     source.window=w; source.id=++m_nextLocalWindowId;
                 }
                 WindowMetadata value; value.id=source.id;
-                value.application=applicationKey(w->m_initialClass.empty()?w->m_class:w->m_initialClass);
-                value.title=cleanWindowText(w->m_title,MaxWindowTitle);
+                value.application=applicationKey(classOf(w));
+                value.title=cleanWindowText(w->metadata().title(),MaxWindowTitle);
                 const auto& p=panel.pose;
                 value.geometry.origin={p.origin.x,p.origin.y,p.origin.z};
                 value.geometry.right={p.right.x,p.right.y,p.right.z};
@@ -9159,7 +9169,7 @@ std::string CDesktop3D::hyprctl(const std::string& request) {
         m_yaw   = wrapAngle(std::atan2(to.x, -to.z));
         m_pitch = std::clamp(std::atan2(to.y, std::hypot(to.x, to.z)), -1.55f, 1.55f);
         const auto w = best->window.lock();
-        return std::format("0x{:x} {}", (uintptr_t)w.get(), w->m_class);
+        return std::format("0x{:x} {}", (uintptr_t)w.get(), classOf(w));
     }
     if (cmd == "grab") // like G and H
         return carry();
@@ -9227,7 +9237,7 @@ std::string CDesktop3D::hyprctl(const std::string& request) {
             const V3   c      = m_view.point(p.pose.at(p.box.size() * 0.5));
             const bool inView = m_mode != MODE_OFF && c.z < 0 && std::abs(c.y) <= -c.z * tanY && std::abs(c.x) <= -c.z * tanY * aspect;
             list += std::format(R"({}{{"kind": "{}", "class": "{}", "title": "{}", "box": [{:.0f}, {:.0f}, {:.0f}, {:.0f}], "placed": {}, "front": {}, "aimed": {}, "alpha": {:.2f}, "inView": {}, "surfaces": [{}]}})",
-                                list.empty() ? "" : ", ", KINDS[p.kind], jsonEscape(w ? w->m_class : ""), jsonEscape(w ? w->m_title : ""), p.box.x, p.box.y, p.box.w, p.box.h,
+                                list.empty() ? "" : ", ", KINDS[p.kind], jsonEscape(w ? classOf(w) : ""), jsonEscape(w ? w->metadata().title() : ""), p.box.x, p.box.y, p.box.w, p.box.h,
                                 p.placed, p.front, (int)i == m_aimed, p.alpha, inView, surfaces);
         }
         return "[" + list + "]";

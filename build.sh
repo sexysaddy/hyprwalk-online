@@ -41,6 +41,7 @@ if ((CHECK_ONLY)); then
   if [[ "$MODE" == core ]]; then echo "CHECK PASS: profile=$PROFILE mode=core (no compilation)"; exit 0; fi
   command -v pkg-config >/dev/null || die 'pkg-config missing'
   pkg-config --exists hyprland || die 'Hyprland SDK missing: pkg-config cannot find hyprland.pc'
+  "$ROOT/shared/plugin/tools/check-hyprland-api.sh" "" "$(pkg-config --modversion hyprland)"
   if [[ "$MODE" == video ]]; then
     "$ROOT/tools/check-webrtc.sh"
   fi

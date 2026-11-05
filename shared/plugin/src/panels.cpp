@@ -2,11 +2,13 @@
 #include "compat.hpp"
 
 #include <hyprland/src/Compositor.hpp>
-#include <hyprland/src/desktop/Workspace.hpp>
+#include <hyprland/src/desktop/DesktopTypes.hpp>
+#include <hyprland/src/workspace/HLWorkspace.hpp>
 #include <hyprland/src/desktop/state/FocusState.hpp>
 #include <hyprland/src/desktop/view/LayerSurface.hpp>
 #include <hyprland/src/desktop/view/Popup.hpp>
-#include <hyprland/src/desktop/view/Window.hpp>
+#include <hyprland/src/desktop/view/window/Window.hpp>
+#include <hyprland/src/desktop/view/window/WindowPresentation.hpp>
 #include <hyprland/src/protocols/XDGShell.hpp>
 #include <hyprland/src/render/Renderer.hpp>
 #include <hyprland/src/managers/input/InputManager.hpp>
@@ -86,7 +88,7 @@ namespace hyprwalk {
                 return;
             head->breadthfirst(
                 [&](SP<Desktop::View::CPopup> popup, void*) {
-                    if (!popup || !popup->aliveAndVisible())
+                    if (!popup || !popup->mapped())
                         return;
                     const auto surf = popup->resource();
                     if (!drawable(surf))
@@ -112,14 +114,14 @@ namespace hyprwalk {
         void addLayers(std::vector<SPanel>& out, PHLMONITOR mon, int layer, float depth, int& order, float lift = 0.f) {
             for (const auto& ref : mon->m_layerSurfaceLayers[layer]) {
                 const auto ls = ref.lock();
-                if (!ls || (!ls->m_mapped && !hypr::fadingOut(ls)))
+                if (!ls || (!ls->mapped() && !hypr::fadingOut(ls)))
                     continue;
                 const auto surf = ls->resource();
                 if (!drawable(surf))
                     continue;
 
                 float alpha = hypr::alpha(ls);
-                if (!hypr::fadingOut(ls) && !ls->m_aboveFullscreen)
+                if (!hypr::fadingOut(ls) && !(ls->m_flags & Desktop::View::LAYER_FLAG_ABOVE_FULLSCREEN))
                     alpha += (1.f - alpha) * lift;
                 if (alpha <= 0.f)
                     continue;
@@ -142,7 +144,7 @@ namespace hyprwalk {
                 if (!p.surfaces.empty())
                     out.emplace_back(std::move(p));
 
-                addPopups(out, ls->m_popupHead, popupBase, depth, order, nullptr, alpha);
+                addPopups(out, ls->popupHead(), popupBase, depth, order, nullptr, alpha);
             }
         }
 
@@ -150,24 +152,21 @@ namespace hyprwalk {
 
     // an X11 menu's owner: WM_TRANSIENT_FOR past other menus, else the app's focused window, else the one under it
     PHLWINDOW x11Owner(const PHLWINDOW& w) {
-        const auto xs = w->m_xwaylandSurface.lock();
-        if (!xs)
+        if (!w || !w->backend().isX11())
             return nullptr;
-        auto up = xs->m_parent.lock();
-        for (int hops = 0; up && up->m_overrideRedirect && hops < 16; ++hops)
-            up = up->m_parent.lock();
-        if (up)
-            for (const auto& o : hypr::windows())
-                if (o && o->m_isMapped && o->m_xwaylandSurface.lock() == up)
-                    return o;
+        auto parent = w->backend().parent();
+        for (int hops = 0; parent && parent->backend().traits().overrideRedirect && hops < 16; ++hops)
+            parent = parent->backend().parent();
+        if (parent && parent->mapped() && !parent->isHidden())
+            return parent;
         const auto focus = Desktop::focusState()->window();
         const auto at    = hypr::realPosition(w)->value();
         PHLWINDOW  over;
         for (const auto& o : hypr::windows()) {
-            if (!o || o == w || !o->m_isX11 || o->isX11OverrideRedirect() || !o->m_isMapped || o->isHidden())
+            if (!o || o == w || !o->backend().isX11() || o->backend().traits().overrideRedirect || !o->mapped() || o->isHidden())
                 continue;
-            if (const auto os = o->m_xwaylandSurface.lock(); xs->m_pid > 0 && os && os->m_pid > 0 && os->m_pid != xs->m_pid)
-                continue; // another app's
+            if (o->backend().pid() > 0 && w->backend().pid() > 0 && o->backend().pid() != w->backend().pid())
+                continue;
             if (o == focus)
                 return o;
             if (!over && CBox{hypr::realPosition(o)->value(), hypr::realSize(o)->value()}.containsPoint(at))
@@ -187,17 +186,17 @@ namespace hyprwalk {
             if (!drawable(surf))
                 return;
 
-            Vector2D pos = hypr::realPosition(w)->value() + w->m_floatingOffset;
-            if (ws && !w->m_pinned)
+            Vector2D pos = hypr::realPosition(w)->value() + w->presentation().floatingOffset();
+            if (ws && !(w->m_state & Desktop::View::WINDOW_STATE_PINNED))
                 pos += ws->m_renderOffset->value();
             pos -= mon->m_position;
 
-            float fs = w->alphaValue(Desktop::View::WINDOW_ALPHA_FULLSCREEN);
+            float fs = w->presentation().alphaValue(Desktop::View::WINDOW_ALPHA_FULLSCREEN);
             if (!hypr::fadingOut(w))
                 fs += (1.f - fs) * lift;
-            float alpha = w->alphaValue(Desktop::View::WINDOW_ALPHA_FADE) * fs * w->alphaValue(Desktop::View::WINDOW_ALPHA_LAYOUT) *
-                w->alphaValue(Desktop::View::WINDOW_ALPHA_MOVE_FROM_WORKSPACE) * w->alphaValue(Desktop::View::WINDOW_ALPHA_ACTIVE);
-            if (ws && !w->m_pinned && !placed.contains(reinterpret_cast<uintptr_t>(w.get())))
+            float alpha = w->presentation().alphaValue(Desktop::View::WINDOW_ALPHA_FADE) * fs * w->presentation().alphaValue(Desktop::View::WINDOW_ALPHA_LAYOUT) *
+                w->presentation().alphaValue(Desktop::View::WINDOW_ALPHA_MOVE_FROM_WORKSPACE) * w->presentation().alphaValue(Desktop::View::WINDOW_ALPHA_ACTIVE);
+            if (ws && !(w->m_state & Desktop::View::WINDOW_STATE_PINNED) && !placed.contains(reinterpret_cast<uintptr_t>(w.get())))
                 alpha *= ws->m_alpha->value();
             if (alpha <= 0.f)
                 return;
@@ -211,23 +210,23 @@ namespace hyprwalk {
             p.order    = order++;
             p.alpha    = std::clamp(alpha, 0.f, 1.f);
             p.focused  = w == Desktop::focusState()->window();
-            p.rounding = hypr::fullscreenOrMaximized(w) ? 0.f : w->rounding();
+            p.rounding = hypr::fullscreenOrMaximized(w) ? 0.f : w->presentation().rounding();
             if (p.box.w < 1 || p.box.h < 1)
                 return;
 
             p.hitRoot = surf;
-            if (w->m_isX11)
+            if (w->backend().isX11())
                 p.hitScale = surf->m_current.size / p.box.size();
-            addTree(p, surf, CBox{{0, 0}, p.box.size()}, !w->m_isX11);
+            addTree(p, surf, CBox{{0, 0}, p.box.size()}, !w->backend().isX11());
 
             Vector2D popupBase = p.box.pos();
-            if (!w->m_isX11 && w->m_xdgSurface)
-                popupBase -= w->m_xdgSurface->m_current.geometry.pos();
+            if (!w->backend().isX11())
+                popupBase -= w->backend().geometry().box.pos();
 
             if (!p.surfaces.empty())
                 out.emplace_back(std::move(p));
 
-            addPopups(out, w->m_popupHead, popupBase, depth, order, w, alpha);
+            addPopups(out, w->popupHead(), popupBase, depth, order, w, alpha);
         }
     }
 
@@ -247,7 +246,7 @@ namespace hyprwalk {
         const auto  lift     = [&](const PHLWINDOW& w) { return fsOut || (w && always.contains(reinterpret_cast<uintptr_t>(w.get()))) ? in3D : 0.f; };
         // Hyprland doesn't render windows hidden under a fullscreen one at all
         const auto  underFs = [&](const PHLWINDOW& w) {
-            return fsWindow && w->m_workspace == ws && !w->isAllowedOverFullscreen() && !hypr::fadingOut(w) && w->visibleOnMonitor(mon);
+            return fsWindow && w->m_workspace == ws && !w->isAllowedOverFullscreen() && !hypr::fadingOut(w) && w->presentation().visibleOnMonitor(mon);
         };
 
         addLayers(out, mon, 0, DEPTH_BACKGROUND, order);
@@ -257,12 +256,12 @@ namespace hyprwalk {
         std::vector<std::pair<PHLWINDOW, PHLWINDOW>> x11Popups; // (X11 menu or tooltip, its owner)
         PHLWINDOW              focusedTiled;
         for (const auto& w : hypr::windows()) {
-            if (!w || w->isHidden() || (!w->m_isMapped && !hypr::fadingOut(w)))
+            if (!w || w->isHidden() || (!w->mapped() && !hypr::fadingOut(w)))
                 continue;
             // an X11 menu or tooltip is under a fullscreen window when its owner is
-            const auto owner = w->m_isX11 && w->isX11OverrideRedirect() ? x11Owner(w) : nullptr;
+            const auto owner = w->backend().isX11() && w->backend().traits().overrideRedirect ? x11Owner(w) : nullptr;
             if (!g_pHyprRenderer->shouldRenderWindow(w, mon) && !(underFs(w) && lift(owner ? owner : w) > 0.f)) {
-                if (w->m_isMapped && always.contains(reinterpret_cast<uintptr_t>(w.get())))
+                if (w->mapped() && always.contains(reinterpret_cast<uintptr_t>(w.get())))
                     elsewhere.push_back(w);
                 continue;
             }
@@ -273,12 +272,12 @@ namespace hyprwalk {
             }
 
             if (w->onSpecialWorkspace())
-                (w->m_isFloating ? specialFloating : special).push_back(w);
+                (w->isFloating() ? specialFloating : special).push_back(w);
             else if (hypr::fullscreenOrMaximized(w))
                 full.push_back(w);
-            else if (w->m_pinned)
+            else if (w->m_state & Desktop::View::WINDOW_STATE_PINNED)
                 pinned.push_back(w);
-            else if (w->m_isFloating)
+            else if (w->isFloating())
                 floating.push_back(w);
             else if (w == Desktop::focusState()->window())
                 focusedTiled = w;

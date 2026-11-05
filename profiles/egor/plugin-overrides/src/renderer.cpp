@@ -15,7 +15,7 @@
 
 #include <EGL/egl.h>
 #if defined(HYPRWALK_MULTIPLAYER) && defined(HYPRWALK_WEBRTC)
-#include <hyprland/src/desktop/view/Window.hpp>
+#include <hyprland/src/desktop/view/window/Window.hpp>
 #endif
 #ifdef __GLIBC__
 #include <malloc.h>
@@ -1965,7 +1965,7 @@ namespace hyprwalk {
             const auto panel=std::find_if(f.panels->begin(),f.panels->end(),[&](const auto& p){return p.key==request.panel;});
             const auto w=panel!=f.panels->end()&&panel->kind==PANEL_WINDOW?panel->window.lock():nullptr;
             // Revalidate immediately before touching the FBO, not just at the 10 Hz catalog scan.
-            if(!w||!w->m_isMapped||w->isHidden()||!w->m_ruleApplicator||w->m_ruleApplicator->noScreenShare().valueOrDefault()||panel->surfaces.empty()||panel->alpha<.05f){
+            if(!w||!w->mapped()||w->isHidden()||!w->m_ruleApplicator||w->m_ruleApplicator->noScreenShare().valueOrDefault()||panel->surfaces.empty()||panel->alpha<.05f){
                 f.videoSession->revoke(request.key.window);continue;
             }
             // Readback lifetime follows the authorized publication/window, not

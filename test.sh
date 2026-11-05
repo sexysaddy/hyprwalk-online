@@ -35,6 +35,11 @@ r=Path(sys.argv[1]); bad=[]
 for p in r.rglob('*'):
     if not p.is_file(): continue
     rel=p.relative_to(r).as_posix()
+    # build.sh deliberately writes finished plugin artifacts to dist/.
+    # They are runtime outputs, not source-package pollution; keep checking
+    # every other directory so stray build products in the source tree fail.
+    if rel == 'dist' or rel.startswith('dist/'):
+        continue
     if p.suffix in {'.o','.d','.so','.a','.pyc'} or '__pycache__' in p.parts: bad.append(rel)
     if rel.endswith('/assets/viewmodels/cs16/v_knife.mdl'): bad.append(rel+' (redistribution permission not confirmed)')
 if bad:
@@ -44,6 +49,7 @@ PY
 
 printf '== Profile assembly ==\n'; python3 "$ROOT/tests/test_profile_assembly.py"
 printf '== Build mode contracts ==\n'; python3 "$ROOT/tests/test_build_modes.py"
+printf '== Hyprland 0.57 API migration contracts ==\n'; python3 "$ROOT/tests/test_hyprland_057_contract.py"
 printf '== Video error isolation contract ==\n'; python3 "$ROOT/tests/test_video_error_isolation.py"
 printf '== SDP payload negotiation regression contract ==\n'; python3 "$ROOT/tests/test_sdp_negotiation_contract.py"
 printf '== WebRTC incoming-pad routing regression contract ==\n'; python3 "$ROOT/tests/test_webrtc_pad_routing_contract.py"
